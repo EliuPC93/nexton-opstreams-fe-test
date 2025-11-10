@@ -1,0 +1,22 @@
+.icon-button {
+    display: flex;
+    font-size: 14px;
+    font-family: 'Gilroy-Semibold', sans-serif;
+    height: 32px;
+    width: auto;
+    align-items: center;
+    gap: 8px;
+    border-radius: 100px;
+    border:1px solid #1DB496;
+    background-color: #F2FDFB;
+    color: #1DB496;
+    padding: 4px 12px;
+
+    .software {
+        background-image: url('/assets/icons/view-cozy.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+        height: 16.67px;
+        width: 16.67px;
+    }
+}
