@@ -1,3 +1,8 @@
 $brand-main-color: #1DB496;
 $brand-white-color: #F2FDFB;
 $brand-dark-color: #26292D;
+
+@mixin getIcon($iconName) {
+    -webkit-mask: url("/assets/icons/#{$iconName}.svg") no-repeat center;
+    mask: url('/assets/icons/#{$iconName}.svg') no-repeat center;
+}

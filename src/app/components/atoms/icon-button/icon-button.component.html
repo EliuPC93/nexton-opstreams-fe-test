@@ -1,4 +1,4 @@
-<button type="button" class="icon-button" [ngClass]="iconName" (click)="onSelect()">
-    <span class="icon-img"></span>
-    {{ label }}
+<button type="button" class="icon-button" (click)="onSelect()">
+    <span class="icon-img" [ngClass]="getClass(key)" ></span>
+    {{ getLabel(key) }}
 </button>

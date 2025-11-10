@@ -8,7 +8,7 @@
     align-items: center;
     gap: 8px;
     border-radius: 100px;
-    border:1px solid $brand-dark-color;
+    border: 1px solid $brand-dark-color;
     background-color: $brand-white-color;
     color: $brand-dark-color;
     padding: 4px 12px;
@@ -18,17 +18,15 @@
         height: 16.67px;
         width: 16.67px;
         background-color: $brand-dark-color;
-        -webkit-mask: url('/assets/icons/hardware.svg') no-repeat center;
-        mask: url('/assets/icons/hardware.svg') no-repeat center;
         -webkit-mask-size: contain;
         mask-size: contain;
 
-    }
+        &.hardware {
+           @include getIcon('hardware');
+        }
 
-    &.software {
-        .icon-img {
-            -webkit-mask: url('/assets/icons/software.svg') no-repeat center;
-            mask: url('/assets/icons/software.svg') no-repeat center;
+        &.software {
+           @include getIcon('software');
         }
     }
 }
