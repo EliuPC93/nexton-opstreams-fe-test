@@ -1,3 +1,5 @@
+@import '../../variables';
+
 .select-container {
     display: flex;
     flex-direction: column;
@@ -5,9 +7,22 @@
     align-items: center;
     justify-content: center;
     height: 100vh;
-    
+
     .buttons-row {
         display: flex;
         gap: 8px;
+
+        ::ng-deep .selected {
+            .icon-button {
+                border-color: $brand-main-color;
+                color: $brand-main-color;
+
+                .icon-img {
+                    background-color: $brand-main-color;
+                    color: $brand-main-color;
+                    border-color: $brand-main-color;
+                }
+            }
+        }
     }
 }

@@ -2,7 +2,7 @@
     <h2>What do you need to purchase?</h2>
 
     <div class="buttons-row">
-        <app-icon-button iconName="software" label="Software"></app-icon-button>
-        <app-icon-button iconName="hardware" label="Hardware"></app-icon-button>
+        <app-icon-button [ngClass]="{ selected: selected === 'software' }" (select)="setSelection($event)" iconName="software" label="Software"></app-icon-button>
+        <app-icon-button [ngClass]="{ selected: selected === 'hardware' }" (select)="setSelection($event)" iconName="hardware" label="Hardware"></app-icon-button>
     </div>
 </main>

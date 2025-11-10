@@ -26,11 +26,7 @@
     }
 
     &.software {
-        color: $brand-main-color;
-        border-color: $brand-main-color;
-
         .icon-img {
-            background-color: $brand-main-color;
             -webkit-mask: url('/assets/icons/software.svg') no-repeat center;
             mask: url('/assets/icons/software.svg') no-repeat center;
         }
