@@ -1,22 +1,38 @@
+@import '../../../../variables';
+
 .icon-button {
     display: flex;
     font-size: 14px;
-    font-family: 'Gilroy-Semibold', sans-serif;
     height: 32px;
     width: auto;
     align-items: center;
     gap: 8px;
     border-radius: 100px;
-    border:1px solid #1DB496;
-    background-color: #F2FDFB;
-    color: #1DB496;
+    border:1px solid $brand-dark-color;
+    background-color: $brand-white-color;
+    color: $brand-dark-color;
     padding: 4px 12px;
+    cursor: pointer;
 
-    .software {
-        background-image: url('/assets/icons/view-cozy.svg');
-        background-repeat: no-repeat;
-        background-size: contain;
+    .icon-img {
         height: 16.67px;
         width: 16.67px;
+        background-color: $brand-dark-color;
+        -webkit-mask: url('/assets/icons/hardware.svg') no-repeat center;
+        mask: url('/assets/icons/hardware.svg') no-repeat center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+
+    }
+
+    &.software {
+        color: $brand-main-color;
+        border-color: $brand-main-color;
+
+        .icon-img {
+            background-color: $brand-main-color;
+            -webkit-mask: url('/assets/icons/software.svg') no-repeat center;
+            mask: url('/assets/icons/software.svg') no-repeat center;
+        }
     }
 }
