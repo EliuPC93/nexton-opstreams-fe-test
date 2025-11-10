@@ -3,11 +3,12 @@ import { IconButtonComponent } from "../components/atoms/icon-button/icon-button
 import { NgClass } from '@angular/common';
 import { ProcurementService } from '../procurement.service';
 import { ProductRequest } from '../product-requests';
+import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
 
 @Component({
 	selector: 'app-select',
 	providers: [ProcurementService],
-	imports: [IconButtonComponent, NgClass],
+	imports: [IconButtonComponent, ActionButtonComponent, NgClass],
 	templateUrl: './select.component.html',
 	styleUrl: './select.component.scss'
 })

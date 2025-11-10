@@ -25,4 +25,11 @@
             }
         }
     }
+
+    ::ng-deep {
+        .action-button {
+            padding-right: 80%;
+            width: 147px;
+        }
+    }
 }
