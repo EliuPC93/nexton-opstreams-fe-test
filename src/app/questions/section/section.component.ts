@@ -1,19 +1,21 @@
-import { Component, OnChanges, SimpleChanges } from '@angular/core';
-import { Router } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { SectionService } from '../../section.service';
+import { Section } from '../../product-requests';
 
 @Component({
   selector: 'app-section',
   templateUrl: './section.component.html',
   styleUrl: './section.component.scss'
 })
-export class SectionComponent implements OnChanges {
-	constructor(private router: Router) {
-		const navigation = this.router.getCurrentNavigation();
-		console.log(navigation?.extras.state?.['section']);
+export class SectionComponent implements OnInit {
+	currentSection: Section | null = null;
+	constructor(private sectionService: SectionService) {
 	}
 
-	ngOnChanges(changes: SimpleChanges): void {
-		const navigation = this.router.getCurrentNavigation();
-		console.log(navigation?.extras.state?.['section']);
+	ngOnInit(): void {
+		this.sectionService.getSection$().subscribe(section => {
+			console.log('Received section via service:', section);
+			this.currentSection = section;
+		});
 	}
 }

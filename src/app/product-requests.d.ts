@@ -24,7 +24,7 @@ interface ToggleField extends Omit<BaseField, "required"> {
 
 type Field = TextField | NumberField | RadioField | ToggleField;
 
-interface Section {
+export interface Section {
     id: string;
     title: string;
     fields: Field[];
