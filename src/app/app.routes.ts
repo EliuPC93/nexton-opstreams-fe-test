@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { RouteGuardService } from './route-guard.service';
 
 export const routes: Routes = [
     {
@@ -12,6 +13,7 @@ export const routes: Routes = [
     },
     {
         path: 'questions',
-        loadChildren: () => import('./questions/questions.module').then(m => m.QuestionsModule)
+        loadChildren: () => import('./questions/questions.module').then(m => m.QuestionsModule),
+		canActivate: [RouteGuardService]
     },
 ];
