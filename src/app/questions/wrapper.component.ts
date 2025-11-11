@@ -10,12 +10,14 @@ import { ProductRequest } from '../product-requests';
 })
 export class WrapperComponent {
 	schema: ProductRequest | undefined;
-	page = 1;
 
 	constructor(private router: Router) {
 		const navigation = this.router.getCurrentNavigation();
 		this.schema = navigation?.extras.state?.['schema'];
-		this.router.navigate([this.page], { relativeTo: this.router.routerState.root.firstChild, state: {section: this.schema?.sections[this.page - 1]} });
+		this.goToPage(0);
 	}
 
+	goToPage(page: number) {
+		this.router.navigate([page + 1], { relativeTo: this.router.routerState.root.firstChild, state: {section: this.schema?.sections[page]} });
+	}
 }
