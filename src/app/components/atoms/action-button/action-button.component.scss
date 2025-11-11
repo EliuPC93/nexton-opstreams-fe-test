@@ -16,7 +16,21 @@
         background-color: $brand-white-color;
         color: $brand-dark-color;
         border: 1px solid $brand-dark-color;
+    }
 
+    &.navItem {
+        color: $brand-dark-color;
+        text-align: left;
+        border-right: 1px solid $brand-gray-color;
+        background-color: $brand-light-gray-color;
+        width: 250px;
+        height: 40;
+        opacity: 1;
+        padding: 8px;
+        width: 250px;
+        opacity: 1;
+        gap: 4px;
+        border-radius: 4px;
     }
 
     &:disabled {

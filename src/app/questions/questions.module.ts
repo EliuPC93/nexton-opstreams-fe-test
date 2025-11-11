@@ -5,16 +5,19 @@ import { QuestionsRoutingModule } from './questions-routing.module';
 import { SectionComponent } from './section/section.component';
 import { RouterModule } from '@angular/router';
 import { SectionService } from '../section.service';
+import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
 
 @NgModule({
-  declarations: [],
+  declarations: [
+    WrapperComponent
+  ],
   providers: [SectionService],
   imports: [
     RouterModule,
     CommonModule,
     QuestionsRoutingModule,
-    WrapperComponent,
     SectionComponent,
+    ActionButtonComponent
   ]
 })
 export class QuestionsModule { }

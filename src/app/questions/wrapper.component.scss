@@ -1,0 +1,11 @@
+@import '../../variables';
+
+.selected {
+    ::ng-deep {
+        .navItem {
+            background-color: $brand-main-light-color !important;
+            border-right: solid 3px $brand-main-font-color !important;
+            color: $brand-main-font-color !important;
+        }
+    }
+}

@@ -7,19 +7,21 @@ import { SectionService } from '../section.service';
 	selector: 'app-wrapper',
 	templateUrl: './wrapper.component.html',
 	styleUrl: './wrapper.component.scss',
- imports: [RouterOutlet]
+	standalone: false,
 })
 export class WrapperComponent {
 	schema: ProductRequest | undefined;
+	pageIndex: number = 0;
 
 	constructor(private router: Router, private sectionService: SectionService) {
 		const navigation = this.router.getCurrentNavigation();
 		this.schema = navigation?.extras.state?.['schema'];
-		this.goToPage(0);
+		this.goToPage(this.pageIndex);
 	}
 
 	goToPage(page: number) {
-		this.router.navigate([page + 1], { relativeTo: this.router.routerState.root.firstChild });
-		this.sectionService.setSection(this.schema!.sections[page]);
+		this.pageIndex = page;
+		this.router.navigate([this.pageIndex + 1], { relativeTo: this.router.routerState.root.firstChild });
+		this.sectionService.setSection(this.schema!.sections[this.pageIndex]);
 	}
 }
