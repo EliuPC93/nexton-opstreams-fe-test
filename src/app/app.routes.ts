@@ -8,6 +8,6 @@ export const routes: Routes = [
     },
     {
         path: 'select',
-        loadComponent: () => import('./select/select.component').then(c => c.SelectComponent)
+        loadComponent: () => import('./selection/selection.component').then(c => c.SelectionComponent)
     }
 ];

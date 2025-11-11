@@ -6,13 +6,14 @@ import { ProductRequest } from '../product-requests';
 import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
 
 @Component({
-	selector: 'app-select',
+	selector: 'app-selection',
 	providers: [ProcurementService],
 	imports: [IconButtonComponent, ActionButtonComponent, NgClass],
-	templateUrl: './select.component.html',
-	styleUrl: './select.component.scss'
+	templateUrl: './selection.component.html',
+	styleUrl: './selection.component.scss'
 })
-export class SelectComponent implements OnInit {
+
+export class SelectionComponent implements OnInit {
 	selected: string = '';
 	productSchemas: ProductRequest[] = [];
 
