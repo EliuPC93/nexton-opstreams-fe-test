@@ -9,5 +9,9 @@ export const routes: Routes = [
     {
         path: 'select',
         loadComponent: () => import('./selection/selection.component').then(c => c.SelectionComponent)
-    }
+    },
+    {
+        path: 'questions',
+        loadChildren: () => import('./questions/questions.module').then(m => m.QuestionsModule)
+    },
 ];

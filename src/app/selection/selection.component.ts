@@ -4,6 +4,7 @@ import { NgClass } from '@angular/common';
 import { ProcurementService } from '../procurement.service';
 import { ProductRequest } from '../product-requests';
 import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
+import { Router } from '@angular/router';
 
 @Component({
 	selector: 'app-selection',
@@ -17,7 +18,7 @@ export class SelectionComponent implements OnInit {
 	selected: string = '';
 	productSchemas: ProductRequest[] = [];
 
-	constructor(private procurementService: ProcurementService) { }
+	constructor(private procurementService: ProcurementService, private router: Router) { }
 
 	ngOnInit() {
 		this.procurementService.getSchemas().subscribe((schemas: ProductRequest[]) => this.productSchemas = schemas);
@@ -25,5 +26,9 @@ export class SelectionComponent implements OnInit {
 
 	setSelection(selection: string) {
 		this.selected = selection;
+	}
+
+	goToNext() {
+		this.router.navigate(['/questions'], {state: { schema: this.productSchemas.find((schema: ProductRequest) => schema.id === this.selected)}});
 	}
 }
