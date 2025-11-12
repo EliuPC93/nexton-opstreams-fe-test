@@ -59,4 +59,8 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		});
 		return this.questionsForm;
 	}
+
+	onSubmit() {
+		console.log("submitting from", this.questionsForm);
+	}
 }

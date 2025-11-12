@@ -11,4 +11,5 @@ export class ActionButtonComponent {
 	@Input() label: string = '';
 	@Input() variant: string = '';
 	@Input() disabled: boolean = false;
+	@Input() type: 'button' | 'submit' = 'button';
 }
