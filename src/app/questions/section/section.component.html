@@ -1,9 +1,16 @@
 <section>
-    <p>{{getSectionTitle()}}</p>
-    @for (field of getSectionFields(); track $index) {
-        <div>
-            {{field.label}} - {{field.type}}
-        </div>
+    <p>{{currentSection?.title}}</p>
+    @if (!currentFormGroup) {
+        <p>Loading...</p>
+    } @else {
+        <form [formGroup]="currentFormGroup">
+            @for (field of currentSection?.fields; track $index) {
+                <div>
+                    <label for="field-{{field.id}}">{{field.label}}</label>
+                    <input id="field-{{field.id}}" type="{{field.type}}" formControlName="{{field.id}}"/> 
+                </div>
+            }
+        </form>
     }
 
     <footer style="position: fixed; left: 50%; bottom: 0;">
