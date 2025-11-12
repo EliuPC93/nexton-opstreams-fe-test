@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CurrentSchema, SectionService } from '../../section.service';
+import { CurrentSchema, SchemaService } from '../../section.service';
 import { ActionButtonComponent } from '../../components/atoms/action-button/action-button.component';
 import { Router } from '@angular/router';
 import { Field } from '../../product-requests';
@@ -15,14 +15,14 @@ export class SectionComponent implements OnInit {
 	sectionIndex: number = 0;
 	isLastIndex: boolean = false;
 
-	constructor(private router: Router, private sectionService: SectionService) {}
+	constructor(private router: Router, private sectionService: SchemaService) {}
 
 	ngOnInit(): void {
-		this.sectionService.getSection$().subscribe(section => {
-			console.log('Received schema via service:', section);
-			this.currentSchema = section;
-			this.sectionIndex = section.index;
-			this.isLastIndex = section.index === section.schema.sections.length - 1;
+		this.sectionService.getSchema$().subscribe(schema => {
+			console.log('Received schema via service:', schema);
+			this.currentSchema = schema;
+			this.sectionIndex = schema.index;
+			this.isLastIndex = schema.index === schema.schema.sections.length - 1;
 		});
 	}
 
@@ -34,7 +34,7 @@ export class SectionComponent implements OnInit {
 	goToPage(pageToGo = this.sectionIndex) {
 		if (!this.currentSchema) return;
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
-		this.sectionService.setSection(this.currentSchema.schema, pageToGo);
+		this.sectionService.setSchema(this.currentSchema.schema, pageToGo);
 	}
 
 	getSectionFields(): Field[] {

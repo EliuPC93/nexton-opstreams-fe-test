@@ -3,15 +3,15 @@ import { ReplaySubject ,  Observable } from "rxjs";
 import { ProductRequest } from "./product-requests";
 
 @Injectable()
-export class SectionService {
-	private messageSubject: ReplaySubject<CurrentSchema> = new ReplaySubject<CurrentSchema>(1);
+export class SchemaService {
+	private schemaSubject: ReplaySubject<CurrentSchema> = new ReplaySubject<CurrentSchema>(1);
 
-	public setSection(schema: ProductRequest, index = 0): void {
-		this.messageSubject.next({ schema, index });
+	public setSchema(schema: ProductRequest, index = 0): void {
+		this.schemaSubject.next({ schema, index });
 	}
 
-	public getSection$(): Observable<CurrentSchema> {
-		return this.messageSubject.asObservable();
+	public getSchema$(): Observable<CurrentSchema> {
+		return this.schemaSubject.asObservable();
 	}
 }
 
