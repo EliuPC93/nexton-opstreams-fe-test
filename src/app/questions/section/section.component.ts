@@ -11,7 +11,7 @@ import { Router } from '@angular/router';
 })
 export class SectionComponent implements OnInit {
 	currentSchema: CurrentSchema | undefined;
-	pageIndex: number = 0;
+	sectionIndex: number = 0;
 	isLastIndex: boolean = false;
 
 	constructor(private router: Router, private sectionService: SectionService) {}
@@ -20,7 +20,7 @@ export class SectionComponent implements OnInit {
 		this.sectionService.getSection$().subscribe(section => {
 			console.log('Received schema via service:', section);
 			this.currentSchema = section;
-			this.pageIndex = section.index;
+			this.sectionIndex = section.index;
 			this.isLastIndex = section.index === section.schema.sections.length - 1;
 		});
 	}
@@ -29,7 +29,7 @@ export class SectionComponent implements OnInit {
 		return this.currentSchema ? this.currentSchema.schema.sections[this.currentSchema.index].title : '';
 	}
 
-	goToPage(pageToGo = this.pageIndex) {
+	goToPage(pageToGo = this.sectionIndex) {
 		if (!this.currentSchema) return;
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
 		this.sectionService.setSection(this.currentSchema.schema, pageToGo);
