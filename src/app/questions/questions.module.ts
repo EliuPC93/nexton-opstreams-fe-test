@@ -9,7 +9,7 @@ import { ActionButtonComponent } from '../components/atoms/action-button/action-
 
 @NgModule({
   declarations: [
-    WrapperComponent
+    WrapperComponent,
   ],
   providers: [SectionService],
   imports: [

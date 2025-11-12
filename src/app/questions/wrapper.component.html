@@ -1,6 +1,6 @@
 <main >
     <aside style="float: left; display: flex; flex-direction: column;">
-        @for (section of schema?.sections; track $index; let isLast = $last) {
+        @for (section of schema?.sections; track $index) {
             <app-action-button [variant]="'navItem'" [ngClass]="{'selected' : pageIndex === $index}" label="{{section.title}}" (click)="goToPage($index)"></app-action-button>
         }
     </aside>

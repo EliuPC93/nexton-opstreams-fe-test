@@ -4,6 +4,11 @@ import { WrapperComponent } from './wrapper.component';
 
 export const routes: Routes = [
     {
+        path: "",
+        redirectTo: "1",
+        pathMatch: "prefix"
+    },
+    {
         path: "", component: WrapperComponent,
         children: [
             {

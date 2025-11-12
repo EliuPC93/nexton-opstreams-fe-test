@@ -1,3 +1,10 @@
 <section>
-    <p>{{currentSection?.title}}</p>
+    <p>{{getSectionTitle()}}</p>
+    @if (pageIndex) {<app-action-button label="'Previous'" (click)="goToPage(pageIndex - 1)"></app-action-button>}
+
+    @if (isLastIndex) {
+        <app-action-button label="'Submit'"></app-action-button>
+    } @else {
+        <app-action-button label="'Next'" (click)="goToPage(pageIndex + 1)"></app-action-button>
+    }
 </section>
