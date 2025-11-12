@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CurrentSchema, SectionService } from '../../section.service';
 import { ActionButtonComponent } from '../../components/atoms/action-button/action-button.component';
 import { Router } from '@angular/router';
+import { Field } from '../../product-requests';
 
 @Component({
 	selector: 'app-section',
@@ -26,12 +27,18 @@ export class SectionComponent implements OnInit {
 	}
 
 	getSectionTitle(): string {
-		return this.currentSchema ? this.currentSchema.schema.sections[this.currentSchema.index].title : '';
+		if (!this.currentSchema) return '';
+		return this.currentSchema.schema.sections[this.currentSchema.index].title;
 	}
 
 	goToPage(pageToGo = this.sectionIndex) {
 		if (!this.currentSchema) return;
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
 		this.sectionService.setSection(this.currentSchema.schema, pageToGo);
+	}
+
+	getSectionFields(): Field[] {
+		if (!this.currentSchema) return [];
+		return this.currentSchema.schema.sections[this.currentSchema.index].fields;
 	}
 }
