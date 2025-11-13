@@ -17,7 +17,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	sectionIndex: number = 0;
 	isLastIndex: boolean = false;
 	currentSchema: ProductRequest | undefined;
-	questionsForm: FormGroup | undefined;
+	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
 
 	constructor(private router: Router, private sectionService: SchemaService, private changeDetector: ChangeDetectorRef) { }
@@ -34,7 +34,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	ngAfterViewChecked(): void {
 		if (!this.currentSchema) return;
-		this.currentFormGroup = this.buildFormControls(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex].id) as FormGroup;
+		this.currentFormGroup = this.getOrBuildSectionsFormGroup(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex].id) as FormGroup;
 		this.changeDetector.detectChanges();
 	}
 
@@ -44,24 +44,28 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		this.sectionService.setSchema(this.currentSchema, pageToGo);
 	}
 
-	buildFormControls(sections: Section[]): FormGroup {
-		if (this.questionsForm) return this.questionsForm;
+	getOrBuildSectionsFormGroup(sections: Section[]): FormGroup {
+		if (this.sectionsFormGroup) return this.sectionsFormGroup;
 
-		this.questionsForm = new FormGroup({
-			...sections.reduce((acc, section) => {
-				acc[section.id] = new FormGroup({
-				...section.fields.reduce((acc, field) => {
-					acc[field.id] = new FormControl('');
-					return acc;
-				}, {} as { [key: string]: FormControl })					
-				});
-				return acc;
-			}, {} as { [key: string]: FormGroup })
-		});
-		return this.questionsForm;
+		const sectionControls = sections.reduce((acc, section) => {
+			acc[section.id] = this.buildSectionFormGroup(section);
+			return acc;
+		}, {} as { [key: string]: FormGroup });
+
+		this.sectionsFormGroup = new FormGroup(sectionControls);
+		return this.sectionsFormGroup;
+	}
+
+	buildSectionFormGroup(section: Section): FormGroup {
+		const fieldControls = section.fields.reduce((acc, field) => {
+			acc[field.id] = new FormControl('');
+			return acc;
+		}, {} as { [key: string]: FormControl });
+
+		return new FormGroup(fieldControls);
 	}
 
 	onSubmit() {
-		console.log("submitting from", this.questionsForm);
+		console.log("submitting from", this.sectionsFormGroup);
 	}
 }
