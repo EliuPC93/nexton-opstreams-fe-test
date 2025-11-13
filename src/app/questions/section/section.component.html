@@ -3,24 +3,7 @@
     @if (currentFormGroup) {
     <form [formGroup]="currentFormGroup" (ngSubmit)="onSubmit()">
         @for (field of currentSection.fields; track $index) {
-        <div>
-            <label for="field-{{field.id}}">{{field.label}}</label>
-            @switch (field.type) {
-                @case ('radio') {
-                    @for (option of field.options; track $index) {
-                        <input id="field-{{field.id}}-{{option}}" name="{{field.id}}" type="radio" value="{{option}}" formControlName="{{field.id}}" />
-                        <label for="field-{{field.id}}-{{option}}">{{option}}</label>
-                    }
-                } @case ('toggle') {
-                    <label class="switch">
-                        <input id="field-{{field.id}}" type="checkbox" formControlName="{{field.id}}" />
-                        <span class="slider round"></span>
-                    </label>
-                } @default {
-                    <input id="field-{{field.id}}" type="{{field.type}}" formControlName="{{field.id}}" />
-                }
-            }
-        </div>
+            <app-field-input [field]="field" [formGroup]="currentFormGroup"></app-field-input>
         }
         <footer style="position: fixed; left: 50%; bottom: 0;">
             @if (sectionIndex) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex - 1)"></app-action-button>}

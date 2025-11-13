@@ -1,6 +1,7 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { SchemaService } from '../../section.service';
 import { ActionButtonComponent } from '../../components/atoms/action-button/action-button.component';
+import { FieldInputComponent } from '../../components/atoms/field-input/field-input.component';
 import { Router } from '@angular/router';
 import { ProductRequest, Section } from '../../product-requests';
 import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
@@ -9,7 +10,7 @@ import { ReactiveFormsModule, FormControl, FormGroup } from '@angular/forms';
 	selector: 'app-section',
 	templateUrl: './section.component.html',
 	styleUrl: './section.component.scss',
-	imports: [ActionButtonComponent, ReactiveFormsModule]
+	imports: [ActionButtonComponent, ReactiveFormsModule, FieldInputComponent]
 })
 export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSection : Section = { id: '', title: '', fields: [] };

@@ -22,7 +22,7 @@ interface ToggleField extends Omit<BaseField, "required"> {
     default: boolean;
 }
 
-type Field = TextField | NumberField | RadioField | ToggleField;
+export type Field = TextField | NumberField | RadioField | ToggleField;
 
 export interface Section {
     id: string;
