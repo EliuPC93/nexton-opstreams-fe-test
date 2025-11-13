@@ -14,7 +14,7 @@ export class WrapperComponent implements OnInit {
 	pageIndex: number = 0;
 
 	constructor(private router: Router, private sectionService: SchemaService) {
-		const navigation = this.router.getCurrentNavigation();
+		const navigation = this.router.currentNavigation();
 		this.schema = navigation?.extras.state?.['schema'];
 		this.goToPage(this.pageIndex);
 		this.sectionService.setSchema(this.schema!, this.pageIndex);		

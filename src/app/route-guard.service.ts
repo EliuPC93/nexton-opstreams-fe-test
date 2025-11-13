@@ -6,7 +6,7 @@ export class RouteGuardService implements CanActivate {
 	constructor(public router: Router) {}
 	public canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
         // if there is no schema selected then redirect to select page
-        if (!this.router.getCurrentNavigation()?.extras.state?.['schema']) {
+        if (!this.router.currentNavigation()?.extras.state?.['schema']) {
             this.router.navigate(['select']);
             return false;
         }
