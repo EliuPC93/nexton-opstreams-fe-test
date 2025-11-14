@@ -42,7 +42,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	goToPage(pageToGo = this.sectionIndex) {
 		if (!this.currentSchema) return;
-		this.onSubmit();
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
 		this.sectionService.setSchema(this.currentSchema, pageToGo);
 	}
@@ -74,19 +73,23 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	onSubmit() {
-		if (!this.currentFormGroup) return;
-		for (let question in this.currentFormGroup.value) {
-			// Submit if question has been answered
-			if (this.currentFormGroup.value[question]) {
-				this.procurementService.submitRequest(this.currentSection.id, question, this.currentFormGroup.value[question]).subscribe(response => {
-					console.log('Submission response:', response);
-					// if (this.isLastIndex) {
-					// 	this.router.navigate(['/confirmation']);
-					// } else {
-					// 	this.goToPage(this.sectionIndex + 1);
-					// }
-				});
-			}
-		};
+		if (!this.sectionsFormGroup) return;
+		for (let sectionId in this.sectionsFormGroup.value) {
+			const sectionQuestions = this.sectionsFormGroup.value[sectionId];
+			for (let questionId in sectionQuestions) {
+				const answer = sectionQuestions[questionId];
+				// Submit if question has been answered in order to reduce calls to api
+				if (answer !== null && answer !== undefined && answer !== '') {
+					this.procurementService.submitRequest(sectionId, questionId, answer).subscribe(response => {
+						console.log('Submission response:', response);
+						// if (this.isLastIndex) {
+						// 	this.router.navigate(['/confirmation']);
+						// } else {
+						// 	this.goToPage(this.sectionIndex + 1);
+						// }
+					});
+				}
+			};
+		}
 	}
 }
