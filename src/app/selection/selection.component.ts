@@ -1,15 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { IconButtonComponent } from "../components/atoms/icon-button/icon-button.component";
 import { NgClass } from '@angular/common';
 import { ProcurementService } from '../services';
 import { ProductRequest } from '../product-requests';
-import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
 import { Router } from '@angular/router';
+import { AtomsModule } from '../components/atoms/atoms.module';
 
 @Component({
 	selector: 'app-selection',
 	providers: [ProcurementService],
-	imports: [IconButtonComponent, ActionButtonComponent, NgClass],
+	imports: [AtomsModule, NgClass],
 	templateUrl: './selection.component.html',
 	styleUrl: './selection.component.scss'
 })

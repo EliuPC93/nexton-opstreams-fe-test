@@ -1,12 +1,10 @@
 import { Component, Input } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { Field } from '../../../product-requests';
 
 @Component({
     selector: 'app-field-input',
-    standalone: true,
-    imports: [CommonModule, ReactiveFormsModule],
+    standalone: false,
     templateUrl: './field-input.component.html',
     styleUrls: ['./field-input.component.scss']
 })

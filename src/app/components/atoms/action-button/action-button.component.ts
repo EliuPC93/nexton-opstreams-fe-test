@@ -1,11 +1,10 @@
-import { NgClass } from '@angular/common';
 import { Component, Input } from '@angular/core';
 
 @Component({
 	selector: 'app-action-button',
-	imports: [NgClass],
 	templateUrl: './action-button.component.html',
-	styleUrl: './action-button.component.scss'
+	styleUrl: './action-button.component.scss',
+    standalone: false,
 })
 export class ActionButtonComponent {
 	@Input() label: string = '';

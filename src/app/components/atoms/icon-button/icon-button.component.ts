@@ -1,11 +1,10 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { NgClass } from "@angular/common";
 
 @Component({
 	selector: 'app-icon-button',
-	imports: [NgClass],
 	templateUrl: './icon-button.component.html',
-	styleUrl: './icon-button.component.scss'
+	styleUrl: './icon-button.component.scss',
+	standalone: false
 })
 export class IconButtonComponent {
 	@Input() key: string = '';

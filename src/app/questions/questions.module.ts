@@ -5,9 +5,8 @@ import { QuestionsRoutingModule } from './questions-routing.module';
 import { SectionComponent } from './section/section.component';
 import { RouterModule } from '@angular/router';
 import { ProcurementService, SchemaService } from '../services';
-import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
-import { FieldInputComponent } from '../components/atoms/field-input/field-input.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { AtomsModule } from '../components/atoms/atoms.module';
 
 @NgModule({
   declarations: [
@@ -19,9 +18,8 @@ import { ReactiveFormsModule } from '@angular/forms';
     RouterModule,
     CommonModule,
     QuestionsRoutingModule,
-    ActionButtonComponent,
     ReactiveFormsModule,
-    FieldInputComponent
+    AtomsModule,
   ]
 })
 export class QuestionsModule { }
