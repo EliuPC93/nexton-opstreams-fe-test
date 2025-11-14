@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { WrapperComponent } from './wrapper.component';
+import { SectionComponent } from './section/section.component';
 
 export const routes: Routes = [
     {
@@ -13,7 +14,7 @@ export const routes: Routes = [
         children: [
             {
                 path: ":section",
-                loadComponent: () => import("./section/section.component").then(c => c.SectionComponent),
+                component: SectionComponent,
             }
         ]
     }

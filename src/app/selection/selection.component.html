@@ -6,5 +6,5 @@
             <app-icon-button [ngClass]="{ selected: selected === product.id }" (select)="setSelection($event)" [key]="product.id"></app-icon-button>
         }
     </div>
-    <app-action-button label="Start" (click)="goToNext()" [disabled]="!selected"></app-action-button>
+    <app-action-button label="Start" (click)="goToNext()" [isDisabled]="!selected"></app-action-button>
 </main>

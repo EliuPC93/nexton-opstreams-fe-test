@@ -4,20 +4,24 @@ import { WrapperComponent } from './wrapper.component';
 import { QuestionsRoutingModule } from './questions-routing.module';
 import { SectionComponent } from './section/section.component';
 import { RouterModule } from '@angular/router';
-import { SchemaService } from '../services';
+import { ProcurementService, SchemaService } from '../services';
 import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
+import { FieldInputComponent } from '../components/atoms/field-input/field-input.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     WrapperComponent,
+    SectionComponent,
   ],
-  providers: [SchemaService],
+  providers: [SchemaService, ProcurementService],
   imports: [
     RouterModule,
     CommonModule,
     QuestionsRoutingModule,
-    SectionComponent,
-    ActionButtonComponent
+    ActionButtonComponent,
+    ReactiveFormsModule,
+    FieldInputComponent
   ]
 })
 export class QuestionsModule { }

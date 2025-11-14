@@ -10,6 +10,6 @@ import { Component, Input } from '@angular/core';
 export class ActionButtonComponent {
 	@Input() label: string = '';
 	@Input() variant: string = '';
-	@Input() disabled: boolean = false;
+	@Input() isDisabled: boolean = false;
 	@Input() type: 'button' | 'submit' = 'button';
 }
