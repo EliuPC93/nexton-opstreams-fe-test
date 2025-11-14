@@ -3,12 +3,12 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { ActionButtonComponent } from '../../components/atoms/action-button/action-button.component';
 import { FieldInputComponent } from '../../components/atoms/field-input/field-input.component';
-import { ProductRequest, Section } from '../../product-requests';
+import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProcurementService, AnswerService, Answer, SchemaService } from '../../services';
+import { ProcurementService, SchemaService } from '../../services';
 
 @Component({
-	providers: [ProcurementService, AnswerService],
+	providers: [ProcurementService],
 	selector: 'app-section',
 	templateUrl: './section.component.html',
 	styleUrl: './section.component.scss',
@@ -27,7 +27,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		private sectionService: SchemaService,
 		private changeDetector: ChangeDetectorRef,
 		private procurementService: ProcurementService,
-		private answerService: AnswerService,
 	) { }
 
 	ngOnInit(): void {
@@ -79,22 +78,15 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	onSubmit() {
-		if (!this.sectionsFormGroup || !this.currentSchema) return;
-
-		const submissionRequests = this.buildSubmissionRequests();
-
-		if (submissionRequests.length === 0) {
-			console.warn('No answers to submit');
-			return;
-		}
-
-		forkJoin(submissionRequests).subscribe({
-			next: (this.handleSubmissionSuccess),
+		forkJoin(this.buildSubmissionRequests()).subscribe({
+			next: ((response: Answer[]) => this.handleSubmissionSuccess(response, this.router)),
 			error: (this.handleSubmissionError),
 		});
 	}
 
 	private buildSubmissionRequests() {
+		if (!this.sectionsFormGroup) return [];
+
 		const requests = [];
 
 		for (const sectionId in this.sectionsFormGroup!.value) {
@@ -110,13 +102,23 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return requests;
 	}
 
-	private handleSubmissionSuccess(responses: Answer[]) {
-		if (this.isLastIndex) {
-			this.answerService.setAnswers(responses);
-			// Navigate to confirmation or final page
-			console.log('Form submission complete. Navigating to confirmation.');
-			// this.router.navigate(['/confirmation']);
+	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {
+		const answers = unmappedAnswers.map((answer: Answer) => ({
+			...answer,
+			title: this.getQuestionTitle(answer.id)
+		}));
+
+		router.navigate(["summary"], {state: {answers} });
+	}
+
+	public getQuestionTitle(questionId: number | string): string {
+		if (!this.currentSchema) return '';
+
+		for (const section of this.currentSchema.sections) {
+			const field = section.fields.find((field: Field) => field.id === questionId);
+			if (field) return field.label;
 		}
+		return '';
 	}
 
 	private handleSubmissionError(error: any) {

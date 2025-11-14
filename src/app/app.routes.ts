@@ -16,4 +16,8 @@ export const routes: Routes = [
         loadChildren: () => import('./questions/questions.module').then(m => m.QuestionsModule),
 		canActivate: [RouteGuardService]
     },
+    {
+        path: "summary",
+        loadComponent: () => import('./summary/summary.component').then(c => c.SummaryComponent)
+    }
 ];

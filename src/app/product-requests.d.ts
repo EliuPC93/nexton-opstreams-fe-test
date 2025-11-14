@@ -44,3 +44,4 @@ interface Hardware extends BaseRequest {
 }
 
 export type ProductRequest = Software | Hardware;
+export interface Answer { id: number, answer: unknown, title: string };
