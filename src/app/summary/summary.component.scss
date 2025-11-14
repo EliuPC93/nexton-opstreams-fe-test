@@ -1,0 +1,59 @@
+@import '../../variables';
+
+.summary-wrapper {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 72px;
+
+    h1 {
+        font-weight: 700;
+        font-style: Bold;
+        font-size: 24px;
+        line-height: 150%;
+        letter-spacing: 0%;
+        text-align: center;
+        margin: 0;
+    }
+
+    .content {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+
+        h2 {
+            color: $brand-gray-color-2;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+
+            p {
+                width: 576;
+                height: 37;
+                opacity: 1;
+                gap: 16px;
+                padding-top: 8px;
+                padding-bottom: 8px;
+                border-bottom-width: 1px;
+            }
+
+            .unanswered {
+                color: $brand-gray-color-4;
+            }
+        }
+    }
+
+    h3 {
+        font-weight: 500;
+        font-style: Medium;
+        font-size: 14px;
+        line-height: 150%;
+        letter-spacing: 0%;
+        text-align: center;
+        color: $brand-gray-color-3;
+    }
+}
