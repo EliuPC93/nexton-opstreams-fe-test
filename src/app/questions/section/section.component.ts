@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ProductRequest, Section } from '../../product-requests';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService } from '../../procurement.service';
+import { forkJoin } from 'rxjs';
 
 @Component({
 	providers: [ProcurementService],
@@ -73,23 +74,61 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	onSubmit() {
-		if (!this.sectionsFormGroup) return;
-		for (let sectionId in this.sectionsFormGroup.value) {
-			const sectionQuestions = this.sectionsFormGroup.value[sectionId];
-			for (let questionId in sectionQuestions) {
-				const answer = sectionQuestions[questionId];
-				// Submit if question has been answered in order to reduce calls to api
-				if (answer !== null && answer !== undefined && answer !== '') {
-					this.procurementService.submitRequest(sectionId, questionId, answer).subscribe(response => {
-						console.log('Submission response:', response);
-						// if (this.isLastIndex) {
-						// 	this.router.navigate(['/confirmation']);
-						// } else {
-						// 	this.goToPage(this.sectionIndex + 1);
-						// }
-					});
-				}
-			};
+		if (!this.sectionsFormGroup || !this.currentSchema) return;
+
+		const submissionRequests = this.buildSubmissionRequests();
+
+		if (submissionRequests.length === 0) {
+			console.warn('No answers to submit');
+			return;
 		}
+
+		forkJoin(submissionRequests).subscribe({
+			next: (responses) => {
+				console.log('All submissions completed:', responses);
+				this.handleSubmissionSuccess();
+			},
+			error: (err) => {
+				console.error('Submission error:', err);
+				this.handleSubmissionError(err);
+			}
+		});
+	}
+
+	private buildSubmissionRequests() {
+		const requests = [];
+
+		for (const sectionId in this.sectionsFormGroup!.value) {
+			const sectionAnswers = this.sectionsFormGroup!.value[sectionId];
+
+			for (const questionId in sectionAnswers) {
+				const answer = sectionAnswers[questionId];
+
+				// Only submit if question has been answered (not null/undefined/empty)
+				if (this.isAnswered(answer)) {
+					const request = this.procurementService.submitRequest(sectionId, questionId, answer);
+					requests.push(request);
+				}
+			}
+		}
+
+		return requests;
+	}
+
+	private isAnswered(value: any): boolean {
+		return value !== null && value !== undefined && value !== '';
+	}
+
+	private handleSubmissionSuccess() {
+		if (this.isLastIndex) {
+			// Navigate to confirmation or final page
+			console.log('Form submission complete. Navigating to confirmation.');
+			// this.router.navigate(['/confirmation']);
+		}
+	}
+
+	private handleSubmissionError(error: any) {
+		console.error('Failed to submit form:', error);
+		// TODO: Show user-facing error message (toast/snackbar)
 	}
 }
