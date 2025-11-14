@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { RouteGuardService } from './route-guard.service';
+import { RouteGuardService } from './services';
 
 export const routes: Routes = [
     {

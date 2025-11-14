@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { ReplaySubject ,  Observable } from "rxjs";
-import { ProductRequest } from "./product-requests";
+import { ProductRequest } from "../product-requests";
 
 @Injectable()
 export class SchemaService {

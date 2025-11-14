@@ -1,13 +1,11 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { SchemaService } from '../../section.service';
+import { Router } from '@angular/router';
+import { forkJoin } from 'rxjs';
 import { ActionButtonComponent } from '../../components/atoms/action-button/action-button.component';
 import { FieldInputComponent } from '../../components/atoms/field-input/field-input.component';
-import { Router } from '@angular/router';
 import { ProductRequest, Section } from '../../product-requests';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProcurementService } from '../../procurement.service';
-import { forkJoin } from 'rxjs';
-import { AnswerService, Answer } from '../../answers.service';
+import { ProcurementService, AnswerService, Answer, SchemaService } from '../../services';
 
 @Component({
 	providers: [ProcurementService, AnswerService],
@@ -36,8 +34,8 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
 			this.currentSchema = schema;
 			this.sectionIndex = index;
-			this.isLastIndex = this.sectionIndex === this.currentSchema.sections.length - 1;
-			this.currentSection = this.currentSchema.sections[this.sectionIndex];
+			this.isLastIndex = this.sectionIndex === schema.sections.length - 1;
+			this.currentSection = schema.sections[this.sectionIndex];
 			this.currentFormGroup = undefined;
 		});
 	}

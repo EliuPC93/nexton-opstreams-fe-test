@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ProductRequest } from '../product-requests';
-import { SchemaService } from '../section.service';
+import { SchemaService } from '../services';
 
 @Component({
 	selector: 'app-wrapper',

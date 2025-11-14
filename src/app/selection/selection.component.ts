@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IconButtonComponent } from "../components/atoms/icon-button/icon-button.component";
 import { NgClass } from '@angular/common';
-import { ProcurementService } from '../procurement.service';
+import { ProcurementService } from '../services';
 import { ProductRequest } from '../product-requests';
 import { ActionButtonComponent } from '../components/atoms/action-button/action-button.component';
 import { Router } from '@angular/router';
