@@ -5,11 +5,11 @@
     <div class="content">
         <h2>Summary</h2>
 
-        @for (item of answers$ | async; track $index) {
+        @for (answer of answers; track $index) {
             <span class="row">
-                <p>{{item.title}}</p>
-                @if (item.answer) {
-                    <p>{{item.answer}}</p>
+                <p>{{answer.title}}</p>
+                @if (isValidAnswer(answer.value)) {
+                    <p>{{answer.value}}</p>
                 } @else {
                     <p class="unanswered">not answered</p>
                 }
@@ -17,5 +17,5 @@
         }
     </div>
 
-    <app-action-button (click)="resetFlow()" label="Complete the flow and Reset"></app-action-button>
+    <app-action-button (click)="resetSummary()" label="Complete the flow and Reset"></app-action-button>
 </section>

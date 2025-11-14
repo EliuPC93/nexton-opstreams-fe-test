@@ -112,20 +112,20 @@ export class DataService implements InMemoryDbService {
             requests: [{
                 id: 'requested-item',
                 question: [
-                    { id: 1758177604, answer: 'Item Name' },
-                    { id: 75484637462, answer: 'Quantity' },
-                    { id: 75329829348985, answer: 'Item Name' },
-                    { id: 85781623672346, answer: 'Quantity' },
-                    { id: 2389182391823812, answer: true }
+                    { id: 1758177604, value: 'Item Name' },
+                    { id: 75484637462, value: 'Quantity' },
+                    { id: 75329829348985, value: 'Item Name' },
+                    { id: 85781623672346, value: 'Quantity' },
+                    { id: 2389182391823812, value: true }
                 ]
             }, {
                 id: 'vendor-info',
                 question: [
-                    { id: 4957463729, answer: 'Vendor Name' },
-                    { id: 8462736152, answer: 'Vendor Location' },
-                    { id: 6482937561, answer: 'Website' },
-                    { id: 9542834823423, answer: 'Vendor Name' },
-                    { id: 5587934758234, answer: 'Vendor Location' }
+                    { id: 4957463729, value: 'Vendor Name' },
+                    { id: 8462736152, value: 'Vendor Location' },
+                    { id: 6482937561, value: 'Website' },
+                    { id: 9542834823423, value: 'Vendor Name' },
+                    { id: 5587934758234, value: 'Vendor Location' }
                 ]
             }]
         };

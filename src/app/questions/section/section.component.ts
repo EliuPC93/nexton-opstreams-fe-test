@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { forkJoin } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ProcurementService, SchemaService, SummaryService } from '../../services';
+import { ProcurementService, SchemaService, AnswersService } from '../../services';
 
 @Component({
 	selector: 'app-section',
@@ -24,7 +24,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		private sectionService: SchemaService,
 		private changeDetector: ChangeDetectorRef,
 		private procurementService: ProcurementService,
-		private summaryService: SummaryService,
+		private summaryService: AnswersService,
 	) { }
 
 	ngOnInit(): void {
@@ -106,7 +106,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 			title: this.getQuestionTitle(answer.id)
 		}));
 
-		this.summaryService.setSummary(answers);
+		this.summaryService.setAnswers(answers);
 		router.navigate(["summary"]);
 	}
 
