@@ -7,9 +7,10 @@ import { ProductRequest, Section } from '../../product-requests';
 import { ReactiveFormsModule, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService } from '../../procurement.service';
 import { forkJoin } from 'rxjs';
+import { AnswerService, Answer } from '../../answers.service';
 
 @Component({
-	providers: [ProcurementService],
+	providers: [ProcurementService, AnswerService],
 	selector: 'app-section',
 	templateUrl: './section.component.html',
 	styleUrl: './section.component.scss',
@@ -23,7 +24,13 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
 
-	constructor(private router: Router, private sectionService: SchemaService, private changeDetector: ChangeDetectorRef, private procurementService: ProcurementService) { }
+	constructor(
+		private router: Router,
+		private sectionService: SchemaService,
+		private changeDetector: ChangeDetectorRef,
+		private procurementService: ProcurementService,
+		private answerService: AnswerService,
+	) { }
 
 	ngOnInit(): void {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
@@ -84,14 +91,8 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		}
 
 		forkJoin(submissionRequests).subscribe({
-			next: (responses) => {
-				console.log('All submissions completed:', responses);
-				this.handleSubmissionSuccess();
-			},
-			error: (err) => {
-				console.error('Submission error:', err);
-				this.handleSubmissionError(err);
-			}
+			next: (this.handleSubmissionSuccess),
+			error: (this.handleSubmissionError),
 		});
 	}
 
@@ -103,24 +104,17 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
-
-				// Only submit if question has been answered (not null/undefined/empty)
-				if (this.isAnswered(answer)) {
-					const request = this.procurementService.submitRequest(sectionId, questionId, answer);
-					requests.push(request);
-				}
+				const request = this.procurementService.submitRequest(sectionId, questionId, answer);
+				requests.push(request);
 			}
 		}
 
 		return requests;
 	}
 
-	private isAnswered(value: any): boolean {
-		return value !== null && value !== undefined && value !== '';
-	}
-
-	private handleSubmissionSuccess() {
+	private handleSubmissionSuccess(responses: Answer[]) {
 		if (this.isLastIndex) {
+			this.answerService.setAnswers(responses);
 			// Navigate to confirmation or final page
 			console.log('Form submission complete. Navigating to confirmation.');
 			// this.router.navigate(['/confirmation']);
