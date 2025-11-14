@@ -15,7 +15,7 @@ export const appConfig: ApplicationConfig = {
 		provideHttpClient(),
 		importProvidersFrom(
 			HttpClientInMemoryWebApiModule.forRoot(DataService, {
-				delay: 500,
+				delay: 700,
 				passThruUnknownUrl: true
 			})
 		)

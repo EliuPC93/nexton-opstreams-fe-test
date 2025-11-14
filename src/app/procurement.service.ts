@@ -11,4 +11,8 @@ export class ProcurementService {
     public getSchemas(): Observable<ProductRequest[]> {
         return this.httpClient.get<ProductRequest[]>('api/schemas');
     }
+
+    public submitRequest(requestId: string, questionId: string, answer: unknown): Observable<any> {
+        return this.httpClient.put<any>(`api/requests/${requestId}/question/${questionId}`, {answer});
+    };
 }
