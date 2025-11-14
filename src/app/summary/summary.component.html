@@ -5,7 +5,7 @@
     <div class="content">
         <h2>Summary</h2>
 
-        @for (item of answers; track $index) {
+        @for (item of answers$ | async; track $index) {
             <span class="row">
                 <p>{{item.title}}</p>
                 @if (item.answer) {

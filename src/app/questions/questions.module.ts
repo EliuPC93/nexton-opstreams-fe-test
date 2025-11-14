@@ -9,17 +9,20 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { AtomsModule } from '../components/atoms/atoms.module';
 
 @NgModule({
-  declarations: [
-    WrapperComponent,
-    SectionComponent,
-  ],
-  providers: [SchemaService, ProcurementService],
-  imports: [
-    RouterModule,
-    CommonModule,
-    QuestionsRoutingModule,
-    ReactiveFormsModule,
-    AtomsModule,
-  ]
+	declarations: [
+		WrapperComponent,
+		SectionComponent,
+	],
+	providers: [
+		SchemaService,
+		ProcurementService,
+	],
+	imports: [
+		RouterModule,
+		CommonModule,
+		QuestionsRoutingModule,
+		ReactiveFormsModule,
+		AtomsModule,
+	]
 })
 export class QuestionsModule { }

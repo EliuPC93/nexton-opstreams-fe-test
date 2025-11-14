@@ -18,7 +18,6 @@ export const routes: Routes = [
     },
     {
         path: "summary",
-        loadComponent: () => import('./summary/summary.component').then(c => c.SummaryComponent),
-		canActivate: [RouteGuardService]
+        loadComponent: () => import('./summary/summary.component').then(c => c.SummaryComponent), // TODO: add gouard for summary
     }
 ];
