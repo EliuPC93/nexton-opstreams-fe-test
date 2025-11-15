@@ -18,7 +18,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSchema: ProductRequest | undefined;
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
-	savingState = {label: '', isComplete: false};
+	savingState = { label: '', isComplete: false };
 	maxRetries = 2;
 
 	constructor(
@@ -83,24 +83,38 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		timer(1000)
 			.pipe(
 				filter(() => this.isValidAnswer(answer)),
-				tap(()=> this.savingState = {label: "SAVING", isComplete: false}),
+				tap(() => this.savingState = { label: "SAVING", isComplete: false }),
 				concatMap(() => this.procurementService.submitRequest(this.currentSection.id, fieldId.toString(), answer)),
-				retry({count: this.maxRetries, delay: () => {
-					this.savingState = { label: "RETRYING", isComplete: false };
-					return timer(1000)
-				}}))
+				retry({
+					count: this.maxRetries,
+					delay: () => {
+						this.savingState = { label: "RETRYING", isComplete: false };
+						return timer(500)
+					}
+				}))
 			.subscribe({
 				complete: () => this.savingState = { label: 'SAVED', isComplete: true },
-				error: (err) => this.savingState = { label: `ERROR ${err}`, isComplete: true }
+				error: (err) => {
+					console.error(err);
+					this.savingState = { label: 'ERROR', isComplete: true }
+				}
 			}
-		);
+			);
 	}
 
 	onSubmit() {
-		forkJoin(this.buildSubmissionRequests()).subscribe({
-			next: ((response: Answer[]) => this.handleSubmissionSuccess(response, this.router)),
-			error: (this.handleSubmissionError),
-		});
+		forkJoin(this.buildSubmissionRequests()).pipe(
+			tap(() => this.savingState = { label: "SAVING", isComplete: false }),
+			retry({
+				count: this.maxRetries,
+				delay: () => {
+					this.savingState = { label: "RETRYING", isComplete: false };
+					return timer(500);
+				}
+			})).subscribe({
+				next: ((response: Answer[]) => this.handleSubmissionSuccess(response, this.router)),
+				error: (this.handleSubmissionError),
+			});
 	}
 
 	private buildSubmissionRequests() {
@@ -122,13 +136,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return requests;
 	}
 
-	/**
-	 * Determine whether a form answer is valid and should be submitted.
-	 * - Strings: non-empty after trim
-	 * - Numbers: not NaN
-	 * - Booleans: always valid
-	 * - null/undefined/empty string: invalid
-	 */
 	private isValidAnswer(value: unknown): boolean {
 		if (value === null || value === undefined) return false;
 		if (typeof value === 'string') return value.trim() !== '';
@@ -138,6 +145,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {
+		this.savingState = { label: 'SAVED', isComplete: true };
 		const answers = unmappedAnswers.map((answer: Answer) => ({
 			...answer,
 			title: this.getQuestionTitle(answer.id)
@@ -158,7 +166,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	private handleSubmissionError(error: any) {
-		console.error('Failed to submit form:', error);
-		// TODO: Show user-facing error message (toast/snackbar)
+		console.error(error);
+		this.savingState = { label: 'ERROR', isComplete: true }
 	}
 }
