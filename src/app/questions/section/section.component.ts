@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { concatMap, filter, forkJoin, Observable, tap, timer } from 'rxjs';
+import { concatMap, filter, forkJoin, Observable, retry, tap, throwError, timer } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
@@ -19,6 +19,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
 	savingState = {label: '', isComplete: false};
+	maxRetries = 2;
 
 	constructor(
 		private router: Router,
@@ -83,10 +84,14 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 			.pipe(
 				filter(() => this.isValidAnswer(answer)),
 				tap(()=> this.savingState = {label: "SAVING", isComplete: false}),
-				concatMap(() => this.procurementService.submitRequest(this.currentSection.id, fieldId.toString(), answer)))
+				concatMap(() => this.procurementService.submitRequest(this.currentSection.id, fieldId.toString(), answer)),
+				retry({count: this.maxRetries, delay: () => {
+					this.savingState = { label: "RETRYING", isComplete: false };
+					return timer(1000)
+				}}))
 			.subscribe({
 				complete: () => this.savingState = { label: 'SAVED', isComplete: true },
-				error: () => this.savingState = { label: 'ERROR SAVING', isComplete: true }
+				error: (err) => this.savingState = { label: `ERROR ${err}`, isComplete: true }
 			}
 		);
 	}
