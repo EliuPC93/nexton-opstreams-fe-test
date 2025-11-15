@@ -1,4 +1,4 @@
-import { TestBed } from '@angular/core/testing';
+import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { ProcurementService } from './procurement.service';
 import { ProductRequest } from '../product-requests';
@@ -15,6 +15,7 @@ describe('ProcurementService', () => {
 
     service = TestBed.inject(ProcurementService);
     httpMock = TestBed.inject(HttpTestingController);
+    spyOn(Math, 'random').and.returnValue(0.5);
   });
 
   afterEach(() => {
@@ -68,65 +69,76 @@ describe('ProcurementService', () => {
   });
 
   describe('submitRequest', () => {
-    it('sends PUT request to correct endpoint with value', (done) => {
+    it('sends PUT request to correct endpoint with value', fakeAsync(() => {
       const requestId = 'software-request';
       const questionId = 'q1';
       const value = 'answer text';
-
+      let resp: any;
       service.submitRequest(requestId, questionId, value).subscribe((response) => {
-        expect(response).toEqual({ id: questionId, value, title: '' });
-        done();
+        resp = response;
       });
 
       const req = httpMock.expectOne(`api/requests/${requestId}/question/${questionId}`);
       expect(req.request.method).toBe('PUT');
       expect(req.request.body).toEqual({ value });
       req.flush({ id: questionId, value, title: '' });
-    });
 
-    it('handles numeric question IDs', (done) => {
+      // advance past the internal delay
+      tick(600);
+      expect(resp).toEqual({ id: questionId, value, title: '' });
+    }));
+
+    it('handles numeric question IDs', fakeAsync(() => {
       const requestId = 'hardware-request';
       const questionId = '12345';
       const value = true;
-
+      let resp: any;
       service.submitRequest(requestId, questionId, value).subscribe((response) => {
-        expect(response.value).toBe(true);
-        done();
+        resp = response;
       });
 
       const req = httpMock.expectOne(`api/requests/${requestId}/question/${questionId}`);
       expect(req.request.method).toBe('PUT');
       req.flush({ id: questionId, value, title: '' });
-    });
 
-    it('submits various value types', (done) => {
+      tick(600);
+      expect(resp.value).toBe(true);
+    }));
+
+    it('submits various value types', fakeAsync(() => {
       const requestId = 'software-request';
       const questionId = 'q2';
       const value = { nested: 'object' };
-
+      let completed = false;
       service.submitRequest(requestId, questionId, value).subscribe(() => {
-        done();
+        completed = true;
       });
 
       const req = httpMock.expectOne(`api/requests/${requestId}/question/${questionId}`);
       expect(req.request.body).toEqual({ value });
       req.flush({});
-    });
 
-    it('handles submission errors', (done) => {
+      tick(600);
+      expect(completed).toBeTrue();
+    }));
+
+    it('handles submission errors', fakeAsync(() => {
       const requestId = 'software-request';
       const questionId = 'q1';
-
+      let err: any;
       service.submitRequest(requestId, questionId, 'test').subscribe(
         () => fail('should have errored'),
         (error) => {
-          expect(error.status).toBe(400);
-          done();
+          err = error;
         }
       );
 
       const req = httpMock.expectOne(`api/requests/${requestId}/question/${questionId}`);
       req.flush('Bad request', { status: 400, statusText: 'Bad Request' });
-    });
+
+      // http error should be propagated immediately
+      tick();
+      expect(err.status).toBe(400);
+    }));
   });
 });
