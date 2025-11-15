@@ -5,7 +5,7 @@
         @for (field of currentSection.fields; track $index) {
             <app-field-input [field]="field" [formGroup]="currentFormGroup"></app-field-input>
         }
-        <footer style="position: fixed; left: 50%; bottom: 0;">
+        <footer>
             @if (sectionIndex) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex - 1)"></app-action-button>}
             @if (isLastIndex) {
                 <app-action-button  [isDisabled]="!currentFormGroup.valid" label="Submit" [type]="'submit'"></app-action-button>

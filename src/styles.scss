@@ -1,3 +1,5 @@
+@import './variables';
+
 /* You can add global styles to this file, and also import other style files */
 @font-face {
   font-family: 'Gilroy-Semibold';
@@ -7,4 +9,5 @@
 body {
   font-family: 'Gilroy-Semibold', sans-serif;
   margin: 0;
+  background-color: $brand-light-gray-color;
 }

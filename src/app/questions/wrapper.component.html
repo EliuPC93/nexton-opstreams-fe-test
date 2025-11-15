@@ -1,7 +1,7 @@
 <main >
-    <aside style="float: left; display: flex; flex-direction: column; height: 100vh; width: 30%">
+    <aside>
         @for (section of schema?.sections; track $index) {
-            <app-action-button [variant]="'navItem'" [ngClass]="{'selected' : pageIndex === $index}" label="{{section.title}}" (click)="goToPage($index)"></app-action-button>
+            <span [ngClass]="{'selected' : pageIndex === $index}">{{section.title}}</span>
         }
     </aside>
     <router-outlet></router-outlet>

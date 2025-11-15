@@ -3,6 +3,9 @@
 .field-input {
     display:flex;
     flex-direction: column;
+    padding: 24px;
+    background-color: $pure-white-color;
+    margin-bottom: 12px;
 
     .input-label {
         color: $brand-dark-color-2;
@@ -17,13 +20,14 @@
 
         .default-input {
             width: 100%;
-            height: 26px;
+            height: 48px;
             opacity: 1;
             gap: 16px;
             border-radius: 4px;
             padding: 8px 12px;
             border-width: 1px;
             border: 1px solid $brand-gray-color;
+            box-sizing: border-box;
         }
         
         &.radio {

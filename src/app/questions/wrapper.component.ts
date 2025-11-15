@@ -16,7 +16,6 @@ export class WrapperComponent implements OnInit {
 	constructor(private router: Router, private sectionService: SchemaService) {
 		const navigation = this.router.currentNavigation();
 		this.schema = navigation?.extras.state?.['schema'];
-		this.goToPage(this.pageIndex);
 		this.sectionService.setSchema(this.schema!, this.pageIndex);		
 	}
 
@@ -24,11 +23,5 @@ export class WrapperComponent implements OnInit {
 		this.sectionService.getSchema$().subscribe(section => {
 			this.pageIndex = section.index;
 		});
-	}
-
-	goToPage(page: number) {
-		this.pageIndex = page;
-		this.router.navigate([this.pageIndex + 1], { relativeTo: this.router.routerState.root.firstChild });
-		this.sectionService.setSchema(this.schema!, this.pageIndex);
 	}
 }

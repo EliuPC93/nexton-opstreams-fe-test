@@ -1,12 +1,13 @@
 @import '../../variables';
 
 .summary-wrapper {
-    height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 56px 72px;
+    margin: 10vh 20vw;
+    background-color: $pure-white-color;
 
     h1 {
         font-weight: 700;
@@ -32,13 +33,13 @@
             justify-content: space-between;
 
             p {
-                width: 576;
-                height: 37;
-                opacity: 1;
-                gap: 16px;
-                padding-top: 8px;
-                padding-bottom: 8px;
-                border-bottom-width: 1px;
+                margin: 8px;
+                font-weight: 600;
+                font-style: SemiBold;
+                font-size: 14px;
+                line-height: 150%;
+                letter-spacing: 0%;
+
             }
 
             .unanswered {
@@ -55,5 +56,9 @@
         letter-spacing: 0%;
         text-align: center;
         color: $brand-gray-color-3;
+    }
+
+    img {
+        transform: rotateZ(-15deg);
     }
 }
