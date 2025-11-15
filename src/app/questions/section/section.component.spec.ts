@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SectionComponent } from './section.component';
+import { ProcurementService, SchemaService } from '../../services';
 
 describe('SectionComponent', () => {
   let component: SectionComponent;
@@ -8,7 +9,8 @@ describe('SectionComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SectionComponent]
+      providers: [SchemaService, {provide: ProcurementService, useValue: ProcurementServiceMock}],
+      declarations: [SectionComponent]
     })
     .compileComponents();
 
@@ -21,3 +23,5 @@ describe('SectionComponent', () => {
     expect(component).toBeTruthy();
   });
 });
+
+class ProcurementServiceMock { }

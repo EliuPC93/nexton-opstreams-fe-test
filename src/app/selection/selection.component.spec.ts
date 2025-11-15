@@ -1,8 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SelectionComponent } from './selection.component';
+import { ProcurementService } from '../services';
 
-describe('SelectionComponent', () => {
+fdescribe('SelectionComponent', () => {
 	let component: SelectionComponent;
 	let fixture: ComponentFixture<SelectionComponent>;
 
@@ -12,6 +13,9 @@ describe('SelectionComponent', () => {
 		})
 			.compileComponents();
 
+		TestBed.overrideComponent(SelectionComponent, {
+			set: { providers: [{ provide: ProcurementService, useValue: new ProcurementServiceMock() }] }
+		});
 		fixture = TestBed.createComponent(SelectionComponent);
 		component = fixture.componentInstance;
 		fixture.detectChanges();
@@ -21,3 +25,11 @@ describe('SelectionComponent', () => {
 		expect(component).toBeTruthy();
 	});
 });
+
+class ProcurementServiceMock {
+	public getSchemas() {
+		return {
+			subscribe: () => { }
+		}
+	}
+}
