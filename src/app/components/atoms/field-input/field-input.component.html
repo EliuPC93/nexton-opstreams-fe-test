@@ -1,20 +1,24 @@
 @if (field && formGroup) {
-    <div [formGroup]="formGroup">
-        <label for="field-{{field.id}}">{{field.label}}</label>
-        @switch (field.type) {
-            @case ('radio') {
-                @for (option of field.options; track $index) {
-                    <input id="field-{{field.id}}-{{option}}" name="{{field.id}}" type="radio" value="{{option}}" [formControlName]=`${field.id}` />
-                    <label for="field-{{field.id}}-{{option}}">{{option}}</label>
+    <div class="field-input" [formGroup]="formGroup">
+        <label class="input-label" for="field-{{field.id}}">{{field.label}}</label>
+        <div class="input-wrapper" [ngClass]="{'radio': field.type === 'radio'}">
+            @switch (field.type) {
+                @case ('radio') {
+                    @for (option of field.options; track $index) {
+                        <div class="option">
+                            <input id="field-{{field.id}}-{{option}}" name="{{field.id}}" type="radio" value="{{option}}" [formControlName]=`${field.id}` />
+                            <label for="field-{{field.id}}-{{option}}">{{option}}</label>
+                        </div>
+                    }
+                } @case ('toggle') {
+                    <label class="switch">
+                        <input id="field-{{field.id}}" type="checkbox" [formControlName]=`${field.id}` />
+                        <span class="slider round"></span>
+                    </label>
+                } @default {
+                    <input class="default-input" id="field-{{field.id}}" type="{{field.type}}" [formControlName]=`${field.id}` />
                 }
-            } @case ('toggle') {
-                <label class="switch">
-                    <input id="field-{{field.id}}" type="checkbox" [formControlName]=`${field.id}` />
-                    <span class="slider round"></span>
-                </label>
-            } @default {
-                <input id="field-{{field.id}}" type="{{field.type}}" [formControlName]=`${field.id}` />
             }
-        }
+        </div>
     </div>
 }

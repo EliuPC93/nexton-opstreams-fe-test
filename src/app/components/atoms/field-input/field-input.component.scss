@@ -1,59 +1,113 @@
 @import '../../../../variables';
 
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 60px;
-    height: 34px;
+.field-input {
+    display:flex;
+    flex-direction: column;
 
-    input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-
-        &:checked+.slider {
-            background-color: $brand-main-color;
-        }
-
-        &:focus+.slider {
-            box-shadow: 0 0 1px $brand-main-color;
-        }
-
-        &:checked+.slider:before {
-            -webkit-transform: translateX(26px);
-            -ms-transform: translateX(26px);
-            transform: translateX(26px);
-        }
+    .input-label {
+        color: $brand-dark-color-2;
+        font-weight: 500;
+        font-style: Medium;
+        font-size: 14px;
+        line-height: 150%;
+        letter-spacing: 0%;
     }
 
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: $brand-gray-color;
-        -webkit-transition: .4s;
-        transition: .4s;
+    .input-wrapper {
 
-        &:before {
-            position: absolute;
-            content: "";
+        .default-input {
+            width: 100%;
             height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: $brand-dark-color;
-            -webkit-transition: .4s;
-            transition: .4s;
+            opacity: 1;
+            gap: 16px;
+            border-radius: 4px;
+            padding: 8px 12px;
+            border-width: 1px;
+            border: 1px solid $brand-gray-color;
         }
+        
+        &.radio {
+            flex-direction: row;
+            display: flex;
 
-        &.round {
-            border-radius: 34px;
+            .option {
+                width: 64;
+                height: 32;
+                opacity: 1;
+                gap: 8px;
+                border-radius: 36px;
+                padding: 8px 12px;
+                border-width: 1px;
+                border: 1px solid $brand-gray-color;
+                margin-right: 8px;
 
-            &:before {
-                border-radius: 50%;
+                label {
+                    font-weight: 500;
+                    font-style: Medium;
+                    font-size: 12px;
+                    line-height: 150%;
+                    letter-spacing: 0%;
+                    margin-left: 8px;
+                }
+            }
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            
+            input {
+                opacity: 0;
+                width: 0;
+                height: 0;
+                
+                &:checked+.slider {
+                    background-color: $brand-main-color;
+                }
+                
+                &:focus+.slider {
+                    box-shadow: 0 0 1px $brand-main-color;
+                }
+                
+                &:checked+.slider:before {
+                    -webkit-transform: translateX(26px);
+                    -ms-transform: translateX(26px);
+                    transform: translateX(26px);
+                }
+            }
+            
+            .slider {
+                position: absolute;
+                cursor: pointer;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background-color: $brand-gray-color;
+                -webkit-transition: .4s;
+                transition: .4s;
+                
+                &:before {
+                    position: absolute;
+                    content: "";
+                    height: 26px;
+                    width: 26px;
+                    left: 4px;
+                    bottom: 4px;
+                    background-color: $brand-dark-color;
+                    -webkit-transition: .4s;
+                    transition: .4s;
+                }
+                
+                &.round {
+                    border-radius: 34px;
+                    
+                    &:before {
+                        border-radius: 50%;
+                    }
+                }
             }
         }
     }
