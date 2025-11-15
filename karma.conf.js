@@ -26,7 +26,7 @@ module.exports = function (config) {
     },
     singleRun: true,
     coverageReporter: {
-      dir: require('path').join(__dirname, './coverage/<project-name>'),
+      dir: require('path').join(__dirname, './coverage/nexton-opstreams-fe-test'),
       subdir: '.',
       reporters: [
         { type: 'html' },
