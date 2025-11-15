@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { concatMap, filter, forkJoin, Observable, tap, timer } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
@@ -18,6 +18,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSchema: ProductRequest | undefined;
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
+	savingState = {label: '', isComplete: false};
 
 	constructor(
 		private router: Router,
@@ -75,6 +76,21 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return new FormGroup(fieldControls);
 	}
 
+	autoSubmitField(fieldId: number) {
+		const answer = this.currentFormGroup?.value[fieldId];
+
+		timer(1000)
+			.pipe(
+				filter(() => this.isValidAnswer(answer)),
+				tap(()=> this.savingState = {label: "SAVING", isComplete: false}),
+				concatMap(() => this.procurementService.submitRequest(this.currentSection.id, fieldId.toString(), answer)))
+			.subscribe({
+				complete: () => this.savingState = { label: 'SAVED', isComplete: true },
+				error: () => this.savingState = { label: 'ERROR SAVING', isComplete: true }
+			}
+		);
+	}
+
 	onSubmit() {
 		forkJoin(this.buildSubmissionRequests()).subscribe({
 			next: ((response: Answer[]) => this.handleSubmissionSuccess(response, this.router)),
@@ -85,19 +101,35 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	private buildSubmissionRequests() {
 		if (!this.sectionsFormGroup) return [];
 
-		const requests = [];
+		const requests: Observable<Answer>[] = [];
 
 		for (const sectionId in this.sectionsFormGroup!.value) {
 			const sectionAnswers = this.sectionsFormGroup!.value[sectionId];
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
-				const request = this.procurementService.submitRequest(sectionId, questionId, answer);
+				if (!this.isValidAnswer(answer)) continue;
+				const request: Observable<Answer> = this.procurementService.submitRequest(sectionId, questionId, answer);
 				requests.push(request);
 			}
 		}
 
 		return requests;
+	}
+
+	/**
+	 * Determine whether a form answer is valid and should be submitted.
+	 * - Strings: non-empty after trim
+	 * - Numbers: not NaN
+	 * - Booleans: always valid
+	 * - null/undefined/empty string: invalid
+	 */
+	private isValidAnswer(value: unknown): boolean {
+		if (value === null || value === undefined) return false;
+		if (typeof value === 'string') return value.trim() !== '';
+		if (typeof value === 'number') return !isNaN(value);
+		if (typeof value === 'boolean') return true;
+		return false;
 	}
 
 	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {

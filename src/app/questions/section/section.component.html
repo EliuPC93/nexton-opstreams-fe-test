@@ -3,8 +3,9 @@
     @if (currentFormGroup) {
     <form [formGroup]="currentFormGroup" (ngSubmit)="onSubmit()">
         @for (field of currentSection.fields; track $index) {
-            <app-field-input [field]="field" [formGroup]="currentFormGroup"></app-field-input>
+            <app-field-input (focusOut)="autoSubmitField($event)" [field]="field" [formGroup]="currentFormGroup"></app-field-input>
         }
+        @if (savingState.label) { <label [ngClass]="{'persisting-state' : savingState.isComplete}"> {{savingState.label}} </label> }
         <footer>
             @if (sectionIndex) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex - 1)"></app-action-button>}
             @if (isLastIndex) {

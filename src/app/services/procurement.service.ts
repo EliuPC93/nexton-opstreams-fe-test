@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { ProductRequest } from "../product-requests";
+import { Answer, ProductRequest } from "../product-requests";
 import { delay, mergeMap, Observable, of, throwError } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 
@@ -23,10 +23,10 @@ export class ProcurementService {
         return this.httpClient.get<ProductRequest[]>('api/schemas');
     }
 
-    public submitRequest(requestId: string, questionId: string, value: unknown): Observable<any> {
-        return this.httpClient.put<any>(`api/requests/${requestId}/question/${questionId}`, { value }).pipe(
+    public submitRequest(requestId: string, questionId: string, value: unknown): Observable<Answer> {
+        return this.httpClient.put<Answer>(`api/requests/${requestId}/question/${questionId}`, { value }).pipe(
             delay(600),
             mergeMap(this.maybeFail)
-        );;
+        );
     };
 }

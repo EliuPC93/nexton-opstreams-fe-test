@@ -5,4 +5,18 @@ section {
     p {
         margin-top: unset;
     }
+
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+
+    .persisting-state {
+        animation: fadeOut 2s forwards;
+    }
 }
