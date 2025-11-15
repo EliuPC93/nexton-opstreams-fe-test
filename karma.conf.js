@@ -9,8 +9,9 @@ module.exports = function (config) {
       require('karma-jasmine'),
       require('karma-chrome-launcher'),
       require('karma-spec-reporter'),
+      require('karma-coverage'),
     ],
-    reporters: ['spec'],
+    reporters: ['spec', 'coverage'],
     browsers: ['ChromeHeadlessNoSandbox'],
     customLaunchers: {
       ChromeHeadlessNoSandbox: {
@@ -23,6 +24,22 @@ module.exports = function (config) {
         ]
       }
     },
-    singleRun: true
+    singleRun: true,
+    coverageReporter: {
+      dir: require('path').join(__dirname, './coverage/<project-name>'),
+      subdir: '.',
+      reporters: [
+        { type: 'html' },
+        { type: 'text-summary' }
+      ],
+      check: {
+        global: {
+          statements: 80,
+          branches: 80,
+          functions: 80,
+          lines: 80
+        }
+      }
+    }
   });
 };
