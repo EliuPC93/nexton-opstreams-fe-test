@@ -1,9 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { SectionComponent } from './section.component';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
 import { FormGroup, FormControl } from '@angular/forms';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { Section, Field } from '../../product-requests';
 import { Router } from '@angular/router';
 
@@ -107,7 +107,7 @@ describe('SectionComponent', () => {
   });
 
   describe('onSubmit integration', () => {
-    it('builds requests and forwards answers to the summary service', () => {
+    it('builds requests and forwards answers to the summary service', fakeAsync(() => {
       // prepare a currentSchema so getQuestionTitle works
       component.currentSchema = {
         id: 'req1',
@@ -128,10 +128,67 @@ describe('SectionComponent', () => {
       });
 
       component.onSubmit();
+      // allow forkJoin + sync emissions to flush
+      tick(0);
 
       expect(mockProcurementService.submitRequest).toHaveBeenCalled();
       expect(mockRouter.navigate).toHaveBeenCalledWith(['summary']);
-    });
+      expect(mockAnswersService.setAnswers).toHaveBeenCalled();
+    }));
+  });
+
+  describe('autoSubmitField', () => {
+    it('sets SAVED after a successful auto-submit', fakeAsync(() => {
+      component.currentSection = { id: 'sec1', title: 'S1', fields: [] } as any;
+      component.currentFormGroup = new FormGroup({ 1: new FormControl('answer') });
+
+      mockProcurementService.submitRequest.and.returnValue(of({ id: 1, value: 'answer', title: '' }));
+
+      component.autoSubmitField(1);
+
+      // before timer triggers nothing happened
+      expect(component.savingState.label).toBe('');
+
+      // trigger the 1s timer that starts the submit
+      tick(1000);
+
+      expect(mockProcurementService.submitRequest).toHaveBeenCalledWith('sec1', '1', 'answer');
+      // on successful completion the state should be SAVED
+      expect(component.savingState).toEqual({ label: 'SAVED', isComplete: true });
+    }));
+
+    it('retries on error, sets RETRYING during backoff, and ends SAVED when eventually successful', fakeAsync(() => {
+      component.currentSection = { id: 'sec1', title: 'S1', fields: [] } as any;
+      component.currentFormGroup = new FormGroup({ 1: new FormControl('answer') });
+
+      let call = 0;
+      mockProcurementService.submitRequest.and.callFake(() => {
+        call++;
+        if (call < 3) {
+          return throwError(() => new Error('network'));
+        }
+        return of({ id: 1, value: 'answer', title: '' });
+      });
+
+      // ensure retries are allowed (2 retries -> total 3 attempts)
+      component.maxRetries = 2;
+
+      component.autoSubmitField(1);
+
+      // initial delay before first attempt
+      tick(1000);
+      expect(mockProcurementService.submitRequest).toHaveBeenCalledTimes(1);
+
+     expect(component.savingState.label).toBe('RETRYING');
+      tick(1500);
+
+      expect(mockProcurementService.submitRequest).toHaveBeenCalledTimes(2);
+      tick(1500);
+
+      // success sets SAVED
+      expect(component.savingState.label).toBe('SAVED');
+      expect(component.savingState.isComplete).toBeTrue();
+    }));
   });
 
   describe('goToPage method', () => {

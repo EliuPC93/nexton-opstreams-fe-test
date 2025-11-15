@@ -10,7 +10,7 @@ describe('FieldInputComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [FieldInputComponent]
     })
-    .compileComponents();
+      .compileComponents();
 
     fixture = TestBed.createComponent(FieldInputComponent);
     component = fixture.componentInstance;
@@ -19,5 +19,16 @@ describe('FieldInputComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('onFocusOut method', () => {
+    it('should emit id when onFocusOut is called', (done) => {
+      component.field.id = 123;
+      component.focusOut.subscribe((value: number) => {
+        expect(value).toBe(123);
+        done();
+      });
+      component.onFocusOut();
+    });
   });
 });
