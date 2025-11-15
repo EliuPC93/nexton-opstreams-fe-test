@@ -8,7 +8,7 @@ export class ProcurementService {
 
     constructor(private httpClient: HttpClient) { }
 
-    private maybeFail<T>(successValue: T): Observable<T> {
+    private maybeFail<Answer>(successValue: Answer): Observable<Answer> {
         // 20% chance of failure
         const shouldFail = Math.random() < 0.2; 
 

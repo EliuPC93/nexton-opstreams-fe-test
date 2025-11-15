@@ -136,7 +136,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return requests;
 	}
 
-	private isValidAnswer(value: unknown): boolean {
+	public isValidAnswer(value: unknown): boolean {
 		if (value === null || value === undefined) return false;
 		if (typeof value === 'string') return value.trim() !== '';
 		if (typeof value === 'number') return !isNaN(value);
@@ -165,7 +165,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return '';
 	}
 
-	private handleSubmissionError(error: any) {
+	public handleSubmissionError(error: any) {
 		console.error(error);
 		this.savingState = { label: 'ERROR', isComplete: true }
 	}

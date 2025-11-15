@@ -18,7 +18,7 @@ describe('SectionComponent', () => {
     mockProcurementService = jasmine.createSpyObj('ProcurementService', ['submitRequest']);
     mockAnswersService = jasmine.createSpyObj('AnswersService', ['setAnswers']);
     mockRouter = jasmine.createSpyObj('Router', ['navigate']);
-    
+
     // Mock routerState with proper structure for goToPage navigation
     (mockRouter as any).routerState = {
       root: {
@@ -44,6 +44,63 @@ describe('SectionComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('ngOnInit', () => {
+    it('subscribes to SchemaService and sets currentSchema, sectionIndex, isLastIndex, and currentSection', () => {
+      const schemaService = TestBed.inject(SchemaService);
+      const mockSchema = {
+        id: 'req1',
+        title: 'Req 1',
+        sections: [
+          { id: 'sec1', title: 'S1', fields: [] },
+          { id: 'sec2', title: 'S2', fields: [] },
+          { id: 'sec3', title: 'S3', fields: [] }
+        ]
+      } as any;
+
+      schemaService.setSchema(mockSchema, 1);
+      component.ngOnInit();
+
+      expect(component.currentSchema).toEqual(mockSchema);
+      expect(component.sectionIndex).toBe(1);
+      expect(component.isLastIndex).toBeFalse();
+      expect(component.currentSection).toEqual(mockSchema.sections[1]);
+    });
+
+    it('sets isLastIndex to true when on the last section', () => {
+      const schemaService = TestBed.inject(SchemaService);
+      const mockSchema = {
+        id: 'req1',
+        title: 'Req 1',
+        sections: [
+          { id: 'sec1', title: 'S1', fields: [] },
+          { id: 'sec2', title: 'S2', fields: [] }
+        ]
+      } as any;
+
+      schemaService.setSchema(mockSchema, 1);
+      component.ngOnInit();
+
+      expect(component.isLastIndex).toBeTrue();
+    });
+
+    it('resets currentFormGroup to undefined when schema changes', () => {
+      const schemaService = TestBed.inject(SchemaService);
+      component.currentFormGroup = new FormGroup({ test: new FormControl('value') });
+
+      const mockSchema = {
+        id: 'req1',
+        title: 'Req 1',
+        sections: [{ id: 'sec1', title: 'S1', fields: [] }]
+      } as any;
+
+      schemaService.setSchema(mockSchema, 0);
+      component.ngOnInit();
+
+      expect(component.currentFormGroup).toBeUndefined();
+    });
+  });
+
 
   describe('buildSectionFormGroup', () => {
     it('creates controls for fields and applies defaults/validators', () => {
@@ -80,6 +137,47 @@ describe('SectionComponent', () => {
 
       expect(first).toBe(second);
       expect(component['sectionsFormGroup']).toBeDefined();
+    });
+  });
+
+  describe('isValidAnswer', () => {
+    it('returns false for null or undefined', () => {
+      expect(component.isValidAnswer(null)).toBeFalse();
+      expect(component.isValidAnswer(undefined)).toBeFalse();
+    });
+
+    it('returns false for empty or whitespace-only strings', () => {
+      expect(component.isValidAnswer('')).toBeFalse();
+      expect(component.isValidAnswer('   ')).toBeFalse();
+      expect(component.isValidAnswer('\t')).toBeFalse();
+    });
+
+    it('returns true for non-empty strings', () => {
+      expect(component.isValidAnswer('answer')).toBeTrue();
+      expect(component.isValidAnswer('hello world')).toBeTrue();
+      expect(component.isValidAnswer('0')).toBeTrue();
+    });
+
+    it('returns false for NaN numbers', () => {
+      expect(component.isValidAnswer(NaN)).toBeFalse();
+    });
+
+    it('returns true for valid numbers including zero', () => {
+      expect(component.isValidAnswer(0)).toBeTrue();
+      expect(component.isValidAnswer(1)).toBeTrue();
+      expect(component.isValidAnswer(-5)).toBeTrue();
+      expect(component.isValidAnswer(3.14)).toBeTrue();
+    });
+
+    it('returns true for boolean values', () => {
+      expect(component.isValidAnswer(true)).toBeTrue();
+      expect(component.isValidAnswer(false)).toBeTrue();
+    });
+
+    it('returns false for objects and arrays', () => {
+      expect(component.isValidAnswer({})).toBeFalse();
+      expect(component.isValidAnswer([])).toBeFalse();
+      expect(component.isValidAnswer({ key: 'value' })).toBeFalse();
     });
   });
 
@@ -179,7 +277,7 @@ describe('SectionComponent', () => {
       tick(1000);
       expect(mockProcurementService.submitRequest).toHaveBeenCalledTimes(1);
 
-     expect(component.savingState.label).toBe('RETRYING');
+      expect(component.savingState.label).toBe('RETRYING');
       tick(1500);
 
       expect(mockProcurementService.submitRequest).toHaveBeenCalledTimes(2);
@@ -247,5 +345,14 @@ describe('SectionComponent', () => {
       expect(callArgs[0]).toEqual([1]);
       expect(callArgs[1]).toBeDefined();
     });
+  });
+
+  describe('handleSubmissionError', () => {
+    it('Should set savingState to error', () => {
+      component.handleSubmissionError(new Error("failure"));
+
+      expect(component.savingState.isComplete).toBe(true);
+      expect(component.savingState.label).toEqual('ERROR');
+    })
   });
 });
