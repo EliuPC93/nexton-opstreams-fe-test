@@ -48,7 +48,7 @@ describe('WrapperComponent', () => {
 		});
 
 		it('should initialize pageIndex to 0', () => {
-			expect(component.pageIndex).toBe(0);
+			expect(component.pageIndex()).toBe(0);
 		});
 
 		it('should call setSchema on SchemaService with schema and pageIndex', () => {
@@ -74,13 +74,13 @@ describe('WrapperComponent', () => {
 		it('should update pageIndex when schema service emits', () => {
 			component.ngOnInit();
 			// start with constructor default
-			expect(component.pageIndex).toBe(0);
+			expect(component.pageIndex()).toBe(0);
 
 			schemaSubject.next({ schema: mockSchema, index: 2 });
-			expect(component.pageIndex).toBe(2);
+			expect(component.pageIndex()).toBe(2);
 
 			schemaSubject.next({ schema: mockSchema, index: 5 });
-			expect(component.pageIndex).toBe(5);
+			expect(component.pageIndex()).toBe(5);
 		});
 	});
 });
