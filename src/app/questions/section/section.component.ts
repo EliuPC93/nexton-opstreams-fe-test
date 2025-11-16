@@ -1,10 +1,9 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, Observable, of, retry, tap, timer } from 'rxjs';
+import { forkJoin, Observable, of, retry, tap } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
-import { isValidAnswer } from '../../shared/utils';
 
 @Component({
 	selector: 'app-section',

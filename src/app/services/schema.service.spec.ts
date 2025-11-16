@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { SchemaService, CurrentSchema } from './section.service';
+import { SchemaService, CurrentSchema } from './schema.service';
 import { ProductRequest } from '../product-requests';
 
 describe('SchemaService', () => {
