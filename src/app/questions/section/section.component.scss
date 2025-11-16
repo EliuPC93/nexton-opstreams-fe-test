@@ -1,3 +1,6 @@
+@import '../../../variables';
+@include fadeOutKeyframe;
+
 section {
     width: 50vw;
     margin-left: 32px;
@@ -6,17 +9,12 @@ section {
         margin-top: unset;
     }
 
-    @keyframes fadeOut {
-        0% {
-            opacity: 1;
-        }
-
-        100% {
-            opacity: 0;
-        }
-    }
-
     .persisting-state {
-        animation: fadeOut 2s forwards;
+        color: $brand-gray-color-4;
+        size: 10px;
+
+        &.complete {
+            animation: fadeOut 2s forwards;
+        }
     }
 }

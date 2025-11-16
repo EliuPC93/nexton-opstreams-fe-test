@@ -1,6 +1,6 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { forkJoin, Observable, retry, tap, timer } from 'rxjs';
+import { forkJoin, Observable, of, retry, tap, timer } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
@@ -85,7 +85,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 				count: this.maxRetries,
 				delay: () => {
 					this.savingState = { label: "RETRYING", isComplete: false };
-					return timer(500);
+					return of(null);
 				}
 			})).subscribe({
 				next: ((response: Answer[]) => this.handleSubmissionSuccess(response, this.router)),
@@ -103,7 +103,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
-				if (isValidAnswer(answer)) continue;
 				const request: Observable<Answer> = this.procurementService.submitRequest(sectionId, questionId, answer);
 				requests.push(request);
 			}

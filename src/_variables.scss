@@ -15,3 +15,15 @@ $brand-main-font-color: #1AA287;
     -webkit-mask: url("/assets/icons/#{$iconName}.svg") no-repeat center;
     mask: url('/assets/icons/#{$iconName}.svg') no-repeat center;
 }
+
+@mixin fadeOutKeyframe {
+    @keyframes fadeOut {
+        0% {
+            opacity: 1;
+        }
+
+        100% {
+            opacity: 0;
+        }
+    }
+}
