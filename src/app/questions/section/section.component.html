@@ -7,11 +7,11 @@
         }
         @if (savingState().label) { <label class="persisting-state" [ngClass]="{'complete' : savingState().isComplete}"> {{savingState().label}} </label> }
         <footer>
-            @if (sectionIndex) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex - 1)"></app-action-button>}
+            @if (sectionIndex() > 0) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex() - 1)"></app-action-button>}
             @if (isLastIndex()) {
                 <app-action-button  [isDisabled]="!currentFormGroup.valid" label="Submit" [type]="'submit'"></app-action-button>
             } @else {
-                <app-action-button [isDisabled]="!currentFormGroup.valid" label="Next" (click)="goToPage(sectionIndex + 1)"></app-action-button>
+                <app-action-button [isDisabled]="!currentFormGroup.valid" label="Next" (click)="goToPage(sectionIndex() + 1)"></app-action-button>
             }
         </footer>
     </form>

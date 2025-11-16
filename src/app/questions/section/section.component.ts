@@ -13,7 +13,7 @@ import { ProcurementService, SchemaService, AnswersService } from '../../service
 })
 export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSection: Section = { id: '', title: '', fields: [] };
-	sectionIndex: number = 0;
+	sectionIndex:  WritableSignal<number> = signal(0);
 	isLastIndex: WritableSignal<boolean> = signal(false);
 	currentSchema: ProductRequest | undefined;
 	sectionsFormGroup: FormGroup | undefined;
@@ -32,20 +32,20 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	ngOnInit(): void {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
 			this.currentSchema = schema;
-			this.sectionIndex = index;
+			this.sectionIndex.set(index);
 			this.isLastIndex.set(index === schema.sections.length - 1);
-			this.currentSection = schema.sections[this.sectionIndex];
+			this.currentSection = schema.sections[index];
 			this.currentFormGroup = undefined;
 		});
 	}
 
 	ngAfterViewChecked(): void {
 		if (!this.currentSchema) return;
-		this.currentFormGroup = this.getOrBuildSectionsFormGroup(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex].id) as FormGroup;
+		this.currentFormGroup = this.getOrBuildSectionsFormGroup(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex()].id) as FormGroup;
 		this.changeDetector.detectChanges();
 	}
 
-	goToPage(pageToGo = this.sectionIndex) {
+	goToPage(pageToGo = this.sectionIndex()) {
 		if (!this.currentSchema) return;
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
 		this.sectionService.setSchema(this.currentSchema, pageToGo);

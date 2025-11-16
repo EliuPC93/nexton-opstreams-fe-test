@@ -61,7 +61,7 @@ describe('SectionComponent', () => {
       component.ngOnInit();
 
       expect(component.currentSchema).toEqual(mockSchema);
-      expect(component.sectionIndex).toBe(1);
+      expect(component.sectionIndex()).toBe(1);
       expect(component.isLastIndex()).toBeFalse();
       expect(component.currentSection).toEqual(mockSchema.sections[1]);
     });
@@ -173,7 +173,7 @@ describe('SectionComponent', () => {
           { id: 'sec3', title: 'S3', fields: [] }
         ]
       } as any;
-      component.sectionIndex = 0;
+      component.sectionIndex.set(0);
     });
 
     it('navigates to specified page and calls setSchema', () => {
@@ -189,7 +189,7 @@ describe('SectionComponent', () => {
     it('uses sectionIndex as default page when no argument provided', () => {
       const schemaService = TestBed.inject(SchemaService);
       spyOn(schemaService, 'setSchema');
-      component.sectionIndex = 1;
+      component.sectionIndex.set(1);
 
       component.goToPage();
 
