@@ -1,0 +1,22 @@
+<main class="summary-wrapper">
+    <img height="160px" src="/assets/icons/cupcake.png" />
+    <h1>Awesome!</h1>
+    <h3>It works!</h3>
+
+    <div class="content">
+        <h2>Summary</h2>
+
+        @for (answer of answers; track $index) {
+            <span class="row">
+                <p>{{answer.title}}</p>
+                @if (isValidAnswer(answer.value)) {
+                    <p>{{answer.value}}</p>
+                } @else {
+                    <p class="unanswered">not answered</p>
+                }
+            </span>
+        }
+    </div>
+
+    <app-action-button (click)="resetSummary()" label="Complete the flow and Reset"></app-action-button>
+</main>

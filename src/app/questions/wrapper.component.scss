@@ -1,0 +1,32 @@
+@import '../../variables';
+
+main {
+    display: flex;
+    padding: 10% 10%;
+    background-color: $brand-light-gray-color;
+
+    aside {
+        display: flex;
+        flex-direction: column;
+
+        span {
+            color: $brand-dark-color;
+            text-align: left;
+            border-right: 1px solid $brand-gray-color;
+            background-color: $brand-light-gray-color;
+            height: 40;
+            opacity: 1;
+            padding: 8px;
+            opacity: 1;
+            gap: 4px;
+            border-radius: 4px;
+            width: 100%;
+            
+            &.selected {
+                background-color: $brand-main-light-color !important;
+                border-right: solid 3px $brand-main-font-color !important;
+                color: $brand-main-font-color !important;
+            }
+        }
+    }
+}

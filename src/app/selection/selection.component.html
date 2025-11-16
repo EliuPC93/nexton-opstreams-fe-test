@@ -1,0 +1,10 @@
+<main class="select-container">
+    <h2>What do you need to purchase?</h2>
+
+    <div class="buttons-row">
+        @for (product of productSchemas; track $index) {
+            <app-icon-button [ngClass]="{ selected: selected === product.id }" (select)="setSelection($event)" [key]="product.id"></app-icon-button>
+        }
+    </div>
+    <app-action-button label="Start" (click)="goToNext()" [isDisabled]="!selected"></app-action-button>
+</main>

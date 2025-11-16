@@ -1,0 +1,32 @@
+@import '../../../../variables';
+
+.icon-button {
+    display: flex;
+    font-size: 14px;
+    height: 32px;
+    width: auto;
+    align-items: center;
+    gap: 8px;
+    border-radius: 100px;
+    border: 1px solid $brand-dark-color;
+    background-color: $brand-white-color;
+    color: $brand-dark-color;
+    padding: 4px 12px;
+    cursor: pointer;
+
+    .icon-img {
+        height: 16.67px;
+        width: 16.67px;
+        background-color: $brand-dark-color;
+        -webkit-mask-size: contain;
+        mask-size: contain;
+
+        &.hardware {
+           @include getIcon('hardware');
+        }
+
+        &.software {
+           @include getIcon('software');
+        }
+    }
+}

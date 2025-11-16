@@ -1,0 +1,20 @@
+@import '../../../variables';
+@include fadeOutKeyframe;
+
+section {
+    width: 50vw;
+    margin-left: 32px;
+
+    p {
+        margin-top: unset;
+    }
+
+    .persisting-state {
+        color: $brand-gray-color-4;
+        size: 10px;
+
+        &.complete {
+            animation: fadeOut 2s forwards;
+        }
+    }
+}
