@@ -1,9 +1,9 @@
 <section>
-    <p>{{currentSection.title}}</p>
+    <p>{{currentSection().title}}</p>
     @if (currentFormGroup) {
     <form [formGroup]="currentFormGroup" (ngSubmit)="onSubmit()">
-        @for (field of currentSection.fields; track $index) {
-            <app-field-input [sectionId]="currentSection.id" [field]="field" [formGroup]="currentFormGroup"></app-field-input>
+        @for (field of currentSection().fields; track $index) {
+            <app-field-input [sectionId]="currentSection().id" [field]="field" [formGroup]="currentFormGroup"></app-field-input>
         }
         @if (savingState().label) { <label class="persisting-state" [ngClass]="{'complete' : savingState().isComplete}"> {{savingState().label}} </label> }
         <footer>

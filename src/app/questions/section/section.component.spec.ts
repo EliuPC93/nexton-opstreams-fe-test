@@ -63,7 +63,7 @@ describe('SectionComponent', () => {
       expect(component.currentSchema).toEqual(mockSchema);
       expect(component.sectionIndex()).toBe(1);
       expect(component.isLastIndex()).toBeFalse();
-      expect(component.currentSection).toEqual(mockSchema.sections[1]);
+      expect(component.currentSection()).toEqual(mockSchema.sections[1]);
     });
 
     it('sets isLastIndex to true when on the last section', () => {

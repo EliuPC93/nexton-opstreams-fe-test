@@ -12,7 +12,7 @@ import { ProcurementService, SchemaService, AnswersService } from '../../service
 	standalone: false
 })
 export class SectionComponent implements OnInit, AfterViewChecked {
-	currentSection: Section = { id: '', title: '', fields: [] };
+	currentSection: WritableSignal<Section> = signal({ id: '', title: '', fields: [] });
 	sectionIndex:  WritableSignal<number> = signal(0);
 	isLastIndex: WritableSignal<boolean> = signal(false);
 	currentSchema: ProductRequest | undefined;
@@ -34,7 +34,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 			this.currentSchema = schema;
 			this.sectionIndex.set(index);
 			this.isLastIndex.set(index === schema.sections.length - 1);
-			this.currentSection = schema.sections[index];
+			this.currentSection.set(schema.sections[index]);
 			this.currentFormGroup = undefined;
 		});
 	}
