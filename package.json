@@ -1,6 +1,7 @@
 {
   "name": "nexton-opstreams-fe-test",
   "version": "1.0.0",
+  "author": "Irving Eliu Palma Castro",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
