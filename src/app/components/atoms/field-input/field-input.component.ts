@@ -1,4 +1,4 @@
-import { Component, Input, signal } from '@angular/core';
+import { Component, Input, signal, WritableSignal } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Field } from '../../../product-requests';
 import { isValidAnswer } from '../../../shared/utils';
@@ -15,7 +15,7 @@ export class FieldInputComponent {
     @Input() field: Field = { type: "text", id: 0, label: '', required: false };
     @Input() formGroup: FormGroup | undefined;
     @Input() sectionId = '';
-	savingState = signal({ label: '', isComplete: false });
+	savingState: WritableSignal<{label: string, isComplete: boolean}> = signal({ label: '', isComplete: false });
     maxRetries = 2;
 
     constructor(private procurementService: ProcurementService) { }

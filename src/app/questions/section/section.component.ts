@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of, retry, tap } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
@@ -14,11 +14,11 @@ import { ProcurementService, SchemaService, AnswersService } from '../../service
 export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSection: Section = { id: '', title: '', fields: [] };
 	sectionIndex: number = 0;
-	isLastIndex: boolean = false;
+	isLastIndex: WritableSignal<boolean> = signal(false);
 	currentSchema: ProductRequest | undefined;
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
-	savingState = signal({ label: '', isComplete: false });
+	savingState: WritableSignal<{label: string, isComplete: boolean}> = signal({ label: '', isComplete: false });
 	maxRetries = 3;
 
 	constructor(
@@ -33,7 +33,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
 			this.currentSchema = schema;
 			this.sectionIndex = index;
-			this.isLastIndex = this.sectionIndex === schema.sections.length - 1;
+			this.isLastIndex.set(index === schema.sections.length - 1);
 			this.currentSection = schema.sections[this.sectionIndex];
 			this.currentFormGroup = undefined;
 		});

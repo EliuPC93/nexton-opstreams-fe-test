@@ -62,7 +62,7 @@ describe('SectionComponent', () => {
 
       expect(component.currentSchema).toEqual(mockSchema);
       expect(component.sectionIndex).toBe(1);
-      expect(component.isLastIndex).toBeFalse();
+      expect(component.isLastIndex()).toBeFalse();
       expect(component.currentSection).toEqual(mockSchema.sections[1]);
     });
 
@@ -80,7 +80,7 @@ describe('SectionComponent', () => {
       schemaService.setSchema(mockSchema, 1);
       component.ngOnInit();
 
-      expect(component.isLastIndex).toBeTrue();
+      expect(component.isLastIndex()).toBeTrue();
     });
 
     it('resets currentFormGroup to undefined when schema changes', () => {
