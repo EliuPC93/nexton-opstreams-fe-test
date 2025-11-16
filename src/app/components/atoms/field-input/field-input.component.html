@@ -5,20 +5,21 @@
             @switch (field.type) {
                 @case ('radio') {
                     @for (option of field.options; track $index) {
-                        <div (focusout)="onFocusOut()" class="option">
+                        <div (focusout)="autoSubmitField(formGroup, field.id)" class="option">
                             <input id="field-{{field.id}}-{{option}}" name="{{field.id}}" type="radio" value="{{option}}" [formControlName]=`${field.id}` />
                             <label for="field-{{field.id}}-{{option}}">{{option}}</label>
                         </div>
                     }
                 } @case ('toggle') {
-                    <label (focusout)="onFocusOut()" class="switch">
+                    <label (focusout)="autoSubmitField(formGroup, field.id)" class="switch">
                         <input id="field-{{field.id}}" type="checkbox" [formControlName]=`${field.id}` />
                         <span class="slider round"></span>
                     </label>
                 } @default {
-                    <input (focusout)="onFocusOut()" class="default-input" id="field-{{field.id}}" type="{{field.type}}" [formControlName]=`${field.id}` />
+                    <input (focusout)="autoSubmitField(formGroup, field.id)" class="default-input" id="field-{{field.id}}" type="{{field.type}}" [formControlName]=`${field.id}` />
                 }
             }
         </div>
+        @if (savingState.label) { <label [ngClass]="{'persisting-state' : savingState.isComplete}"> {{savingState.label}} </label> }
     </div>
 }

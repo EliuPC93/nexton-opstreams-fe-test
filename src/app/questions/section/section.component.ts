@@ -1,9 +1,10 @@
 import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import { concatMap, filter, forkJoin, Observable, retry, tap, throwError, timer } from 'rxjs';
+import { forkJoin, Observable, retry, tap, timer } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ProcurementService, SchemaService, AnswersService } from '../../services';
+import { isValidAnswer } from '../../shared/utils';
 
 @Component({
 	selector: 'app-section',
@@ -19,7 +20,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
 	savingState = { label: '', isComplete: false };
-	maxRetries = 2;
+	maxRetries = 3;
 
 	constructor(
 		private router: Router,
@@ -77,31 +78,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 		return new FormGroup(fieldControls);
 	}
 
-	autoSubmitField(fieldId: number) {
-		const answer = this.currentFormGroup?.value[fieldId];
-
-		timer(1000)
-			.pipe(
-				filter(() => this.isValidAnswer(answer)),
-				tap(() => this.savingState = { label: "SAVING", isComplete: false }),
-				concatMap(() => this.procurementService.submitRequest(this.currentSection.id, fieldId.toString(), answer)),
-				retry({
-					count: this.maxRetries,
-					delay: () => {
-						this.savingState = { label: "RETRYING", isComplete: false };
-						return timer(500)
-					}
-				}))
-			.subscribe({
-				complete: () => this.savingState = { label: 'SAVED', isComplete: true },
-				error: (err) => {
-					console.error(err);
-					this.savingState = { label: 'ERROR', isComplete: true }
-				}
-			}
-			);
-	}
-
 	onSubmit() {
 		forkJoin(this.buildSubmissionRequests()).pipe(
 			tap(() => this.savingState = { label: "SAVING", isComplete: false }),
@@ -127,21 +103,13 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
-				if (!this.isValidAnswer(answer)) continue;
+				if (isValidAnswer(answer)) continue;
 				const request: Observable<Answer> = this.procurementService.submitRequest(sectionId, questionId, answer);
 				requests.push(request);
 			}
 		}
 
 		return requests;
-	}
-
-	public isValidAnswer(value: unknown): boolean {
-		if (value === null || value === undefined) return false;
-		if (typeof value === 'string') return value.trim() !== '';
-		if (typeof value === 'number') return !isNaN(value);
-		if (typeof value === 'boolean') return true;
-		return false;
 	}
 
 	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {
