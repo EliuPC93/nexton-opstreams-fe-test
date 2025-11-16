@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of, retry, tap } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
@@ -18,7 +18,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSchema: ProductRequest | undefined;
 	sectionsFormGroup: FormGroup | undefined;
 	currentFormGroup: FormGroup | undefined;
-	savingState = { label: '', isComplete: false };
+	savingState = signal({ label: '', isComplete: false });
 	maxRetries = 3;
 
 	constructor(
@@ -79,11 +79,11 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	onSubmit() {
 		forkJoin(this.buildSubmissionRequests()).pipe(
-			tap(() => this.savingState = { label: "SAVING", isComplete: false }),
+			tap(() => this.savingState.set({ label: "SAVING", isComplete: false })),
 			retry({
 				count: this.maxRetries,
 				delay: () => {
-					this.savingState = { label: "RETRYING", isComplete: false };
+					this.savingState.set({ label: "RETRYING", isComplete: false });
 					return of(null);
 				}
 			})).subscribe({
@@ -111,7 +111,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {
-		this.savingState = { label: 'SAVED', isComplete: true };
+		this.savingState.set({ label: 'SAVED', isComplete: true });
 		const answers = unmappedAnswers.map((answer: Answer) => ({
 			...answer,
 			title: this.getQuestionTitle(answer.id)
@@ -133,6 +133,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	public handleSubmissionError(error: any) {
 		console.error(error);
-		this.savingState = { label: 'ERROR', isComplete: true }
+		this.savingState.set({ label: 'ERROR', isComplete: true });
 	}
 }

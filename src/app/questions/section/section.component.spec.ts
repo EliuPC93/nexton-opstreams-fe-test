@@ -224,8 +224,8 @@ describe('SectionComponent', () => {
     it('Should set savingState to error', () => {
       component.handleSubmissionError(new Error("failure"));
 
-      expect(component.savingState.isComplete).toBe(true);
-      expect(component.savingState.label).toEqual('ERROR');
+      expect(component.savingState().isComplete).toBe(true);
+      expect(component.savingState().label).toEqual('ERROR');
     })
   });
 });

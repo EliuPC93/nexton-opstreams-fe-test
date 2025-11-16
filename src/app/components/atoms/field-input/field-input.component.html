@@ -20,6 +20,6 @@
                 }
             }
         </div>
-        @if (savingState.label) { <label class="persisting-state" [ngClass]="{'complete' : savingState.isComplete}"> {{savingState.label}} </label> }
+        @if (savingState().label) { <label class="persisting-state" [ngClass]="{'complete' : savingState().isComplete}"> {{savingState().label}} </label> }
     </div>
 }
