@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal, WritableSignal } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal, WritableSignal, computed, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of, retry, tap } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
@@ -15,8 +15,8 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	currentSection: WritableSignal<Section> = signal({ id: '', title: '', fields: [] });
 	sectionIndex:  WritableSignal<number> = signal(0);
 	isLastIndex: WritableSignal<boolean> = signal(false);
-	currentSchema: ProductRequest | undefined;
-	sectionsFormGroup: FormGroup | undefined;
+	currentSchema: WritableSignal<ProductRequest> = signal({id: "software-request", title: "", sections: []});
+	sectionsFormGroup: Signal<FormGroup> = computed(() => this.getOrBuildSectionsFormGroup(this.currentSchema().sections));
 	currentFormGroup: FormGroup | undefined;
 	savingState: WritableSignal<{label: string, isComplete: boolean}> = signal({ label: '', isComplete: false });
 	maxRetries = 3;
@@ -31,7 +31,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	ngOnInit(): void {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
-			this.currentSchema = schema;
+			this.currentSchema.set(schema);
 			this.sectionIndex.set(index);
 			this.isLastIndex.set(index === schema.sections.length - 1);
 			this.currentSection.set(schema.sections[index]);
@@ -40,27 +40,23 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	ngAfterViewChecked(): void {
-		if (!this.currentSchema) return;
-		this.currentFormGroup = this.getOrBuildSectionsFormGroup(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex()].id) as FormGroup;
+		if (!this.currentSchema().sections.length) return;
+		this.currentFormGroup = this.sectionsFormGroup().get(this.currentSection().id) as FormGroup;
 		this.changeDetector.detectChanges();
 	}
 
 	goToPage(pageToGo = this.sectionIndex()) {
-		if (!this.currentSchema) return;
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
-		this.sectionService.setSchema(this.currentSchema, pageToGo);
+		this.sectionService.setSchema(this.currentSchema(), pageToGo);
 	}
 
 	getOrBuildSectionsFormGroup(sections: Section[]): FormGroup {
-		if (this.sectionsFormGroup) return this.sectionsFormGroup;
-
 		const sectionControls = sections.reduce((acc, section) => {
 			acc[section.id] = this.buildSectionFormGroup(section);
 			return acc;
 		}, {} as { [key: string]: FormGroup });
 
-		this.sectionsFormGroup = new FormGroup(sectionControls);
-		return this.sectionsFormGroup;
+		return new FormGroup(sectionControls);
 	}
 
 	buildSectionFormGroup(section: Section): FormGroup {
@@ -97,8 +93,8 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 		const requests: Observable<Answer>[] = [];
 
-		for (const sectionId in this.sectionsFormGroup!.value) {
-			const sectionAnswers = this.sectionsFormGroup!.value[sectionId];
+		for (const sectionId in this.sectionsFormGroup().value) {
+			const sectionAnswers = this.sectionsFormGroup().value[sectionId];
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
@@ -122,9 +118,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	public getQuestionTitle(questionId: number | string): string {
-		if (!this.currentSchema) return '';
-
-		for (const section of this.currentSchema.sections) {
+		for (const section of this.currentSchema().sections) {
 			const field = section.fields.find((field: Field) => field.id === questionId);
 			if (field) return field.label;
 		}

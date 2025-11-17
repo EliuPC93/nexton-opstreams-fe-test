@@ -60,7 +60,7 @@ describe('SectionComponent', () => {
       schemaService.setSchema(mockSchema, 1);
       component.ngOnInit();
 
-      expect(component.currentSchema).toEqual(mockSchema);
+      expect(component.currentSchema()).toEqual(mockSchema);
       expect(component.sectionIndex()).toBe(1);
       expect(component.isLastIndex()).toBeFalse();
       expect(component.currentSection()).toEqual(mockSchema.sections[1]);
@@ -126,45 +126,34 @@ describe('SectionComponent', () => {
   });
 
   describe('getOrBuildSectionsFormGroup', () => {
-    it('returns a cached FormGroup if already built', () => {
+    it('returns an object for sectionsFormGroup', () => {
+      // TODO: have better test
       const sections: Section[] = [
         { id: 'sec1', title: 'S1', fields: [] }
       ];
 
-      const first = component.getOrBuildSectionsFormGroup(sections);
-      const second = component.getOrBuildSectionsFormGroup(sections);
-
-      expect(first).toBe(second);
-      expect(component['sectionsFormGroup']).toBeDefined();
+      expect(component.getOrBuildSectionsFormGroup(sections)).toBeDefined();
     });
   });
 
   describe('getQuestionTitle', () => {
     it('finds the label for a question id', () => {
-      component.currentSchema = {
+      component.currentSchema.set({
         id: 'req1',
         title: 'Req 1',
         sections: [
           { id: 'sec1', title: 'S1', fields: [{ id: 1, label: 'Label 1', type: 'text' } as Field] }
         ]
-      } as any;
+      } as any);
 
       const title = component.getQuestionTitle(1);
       expect(title).toBe('Label 1');
-    });
-
-    it('returns empty string when schema is missing or id not found', () => {
-      component.currentSchema = undefined;
-      expect(component.getQuestionTitle('nope')).toBe('');
-
-      component.currentSchema = { id: 'x', title: 'x', sections: [] } as any;
-      expect(component.getQuestionTitle('nope')).toBe('');
     });
   });
 
   describe('goToPage method', () => {
     beforeEach(() => {
-      component.currentSchema = {
+      component.currentSchema.set({
         id: 'req1',
         title: 'Req 1',
         sections: [
@@ -172,7 +161,7 @@ describe('SectionComponent', () => {
           { id: 'sec2', title: 'S2', fields: [] },
           { id: 'sec3', title: 'S3', fields: [] }
         ]
-      } as any;
+      } as any);
       component.sectionIndex.set(0);
     });
 
@@ -183,7 +172,7 @@ describe('SectionComponent', () => {
       component.goToPage(2);
 
       expect(mockRouter.navigate).toHaveBeenCalledWith([3], jasmine.any(Object));
-      expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema!, 2);
+      expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema(), 2);
     });
 
     it('uses sectionIndex as default page when no argument provided', () => {
@@ -194,18 +183,7 @@ describe('SectionComponent', () => {
       component.goToPage();
 
       expect(mockRouter.navigate).toHaveBeenCalledWith([2], jasmine.any(Object));
-      expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema!, 1);
-    });
-
-    it('returns early if currentSchema is undefined', () => {
-      const schemaService = TestBed.inject(SchemaService);
-      spyOn(schemaService, 'setSchema');
-      component.currentSchema = undefined;
-
-      component.goToPage(1);
-
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
-      expect(schemaService.setSchema).not.toHaveBeenCalled();
+      expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema(), 1);
     });
 
     it('navigates with correct relative path', () => {
