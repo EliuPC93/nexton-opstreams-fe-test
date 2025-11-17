@@ -1,17 +1,17 @@
 <section>
-    <p>{{currentSection.title}}</p>
+    <p>{{currentSection().title}}</p>
     @if (currentFormGroup) {
     <form [formGroup]="currentFormGroup" (ngSubmit)="onSubmit()">
-        @for (field of currentSection.fields; track $index) {
-            <app-field-input [sectionId]="currentSection.id" [field]="field" [formGroup]="currentFormGroup"></app-field-input>
+        @for (field of currentSection().fields; track $index) {
+            <app-field-input [sectionId]="currentSection().id" [field]="field" [formGroup]="currentFormGroup"></app-field-input>
         }
-        @if (savingState.label) { <label class="persisting-state" [ngClass]="{'complete' : savingState.isComplete}"> {{savingState.label}} </label> }
+        @if (savingState().label) { <label class="persisting-state" [ngClass]="{'complete' : savingState().isComplete}"> {{savingState().label}} </label> }
         <footer>
-            @if (sectionIndex) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex - 1)"></app-action-button>}
-            @if (isLastIndex) {
+            @if (sectionIndex() > 0) {<app-action-button [variant]="'secondary'" label="Previous" (click)="goToPage(sectionIndex() - 1)"></app-action-button>}
+            @if (isLastIndex()) {
                 <app-action-button  [isDisabled]="!currentFormGroup.valid" label="Submit" [type]="'submit'"></app-action-button>
             } @else {
-                <app-action-button [isDisabled]="!currentFormGroup.valid" label="Next" (click)="goToPage(sectionIndex + 1)"></app-action-button>
+                <app-action-button [isDisabled]="!currentFormGroup.valid" label="Next" (click)="goToPage(sectionIndex() + 1)"></app-action-button>
             }
         </footer>
     </form>

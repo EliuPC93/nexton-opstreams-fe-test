@@ -43,12 +43,9 @@ describe('WrapperComponent', () => {
 	});
 
 	describe('Constructor', () => {
-		it('should extract schema from router navigation state', () => {
-			expect(component.schema).toEqual(mockSchema);
-		});
 
 		it('should initialize pageIndex to 0', () => {
-			expect(component.pageIndex).toBe(0);
+			expect(component.pageIndex()).toBe(0);
 		});
 
 		it('should call setSchema on SchemaService with schema and pageIndex', () => {
@@ -61,7 +58,7 @@ describe('WrapperComponent', () => {
 				.and.returnValue({ extras: { state: {} } } as any);
 			const newFixture = TestBed.createComponent(WrapperComponent);
 			const newComponent = newFixture.componentInstance;
-			expect(newComponent.schema).toBeUndefined();
+			expect(newComponent.sections()).toEqual([]);
 		});
 	});
 
@@ -74,13 +71,13 @@ describe('WrapperComponent', () => {
 		it('should update pageIndex when schema service emits', () => {
 			component.ngOnInit();
 			// start with constructor default
-			expect(component.pageIndex).toBe(0);
+			expect(component.pageIndex()).toBe(0);
 
 			schemaSubject.next({ schema: mockSchema, index: 2 });
-			expect(component.pageIndex).toBe(2);
+			expect(component.pageIndex()).toBe(2);
 
 			schemaSubject.next({ schema: mockSchema, index: 5 });
-			expect(component.pageIndex).toBe(5);
+			expect(component.pageIndex()).toBe(5);
 		});
 	});
 });

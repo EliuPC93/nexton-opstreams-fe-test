@@ -1,4 +1,4 @@
-import { AfterViewChecked, Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { AfterViewChecked, Component, OnInit, ChangeDetectorRef, signal, WritableSignal, computed, Signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { forkJoin, Observable, of, retry, tap } from 'rxjs';
 import { Field, ProductRequest, Section, Answer } from '../../product-requests';
@@ -12,13 +12,13 @@ import { ProcurementService, SchemaService, AnswersService } from '../../service
 	standalone: false
 })
 export class SectionComponent implements OnInit, AfterViewChecked {
-	currentSection: Section = { id: '', title: '', fields: [] };
-	sectionIndex: number = 0;
-	isLastIndex: boolean = false;
-	currentSchema: ProductRequest | undefined;
-	sectionsFormGroup: FormGroup | undefined;
+	currentSection: WritableSignal<Section> = signal({ id: '', title: '', fields: [] });
+	sectionIndex:  WritableSignal<number> = signal(0);
+	isLastIndex: WritableSignal<boolean> = signal(false);
+	currentSchema: WritableSignal<ProductRequest> = signal({id: "software-request", title: "", sections: []});
+	sectionsFormGroup: Signal<FormGroup> = computed(() => this.getOrBuildSectionsFormGroup(this.currentSchema().sections));
 	currentFormGroup: FormGroup | undefined;
-	savingState = { label: '', isComplete: false };
+	savingState: WritableSignal<{label: string, isComplete: boolean}> = signal({ label: '', isComplete: false });
 	maxRetries = 3;
 
 	constructor(
@@ -31,36 +31,32 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	ngOnInit(): void {
 		this.sectionService.getSchema$().subscribe(({ schema, index }) => {
-			this.currentSchema = schema;
-			this.sectionIndex = index;
-			this.isLastIndex = this.sectionIndex === schema.sections.length - 1;
-			this.currentSection = schema.sections[this.sectionIndex];
+			this.currentSchema.set(schema);
+			this.sectionIndex.set(index);
+			this.isLastIndex.set(index === schema.sections.length - 1);
+			this.currentSection.set(schema.sections[index]);
 			this.currentFormGroup = undefined;
 		});
 	}
 
 	ngAfterViewChecked(): void {
-		if (!this.currentSchema) return;
-		this.currentFormGroup = this.getOrBuildSectionsFormGroup(this.currentSchema.sections).get(this.currentSchema.sections[this.sectionIndex].id) as FormGroup;
+		if (!this.currentSection().id || this.currentFormGroup) return;
+		this.currentFormGroup = this.sectionsFormGroup().get(this.currentSection().id) as FormGroup;
 		this.changeDetector.detectChanges();
 	}
 
-	goToPage(pageToGo = this.sectionIndex) {
-		if (!this.currentSchema) return;
+	goToPage(pageToGo: number) {
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
-		this.sectionService.setSchema(this.currentSchema, pageToGo);
+		this.sectionService.setSchema(this.currentSchema(), pageToGo);
 	}
 
 	getOrBuildSectionsFormGroup(sections: Section[]): FormGroup {
-		if (this.sectionsFormGroup) return this.sectionsFormGroup;
-
 		const sectionControls = sections.reduce((acc, section) => {
 			acc[section.id] = this.buildSectionFormGroup(section);
 			return acc;
 		}, {} as { [key: string]: FormGroup });
 
-		this.sectionsFormGroup = new FormGroup(sectionControls);
-		return this.sectionsFormGroup;
+		return new FormGroup(sectionControls);
 	}
 
 	buildSectionFormGroup(section: Section): FormGroup {
@@ -79,11 +75,11 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	onSubmit() {
 		forkJoin(this.buildSubmissionRequests()).pipe(
-			tap(() => this.savingState = { label: "SAVING", isComplete: false }),
+			tap(() => this.savingState.set({ label: "SAVING", isComplete: false })),
 			retry({
 				count: this.maxRetries,
 				delay: () => {
-					this.savingState = { label: "RETRYING", isComplete: false };
+					this.savingState.set({ label: "RETRYING", isComplete: false });
 					return of(null);
 				}
 			})).subscribe({
@@ -93,12 +89,10 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	private buildSubmissionRequests() {
-		if (!this.sectionsFormGroup) return [];
-
 		const requests: Observable<Answer>[] = [];
 
-		for (const sectionId in this.sectionsFormGroup!.value) {
-			const sectionAnswers = this.sectionsFormGroup!.value[sectionId];
+		for (const sectionId in this.sectionsFormGroup().value) {
+			const sectionAnswers = this.sectionsFormGroup().value[sectionId];
 
 			for (const questionId in sectionAnswers) {
 				const answer = sectionAnswers[questionId];
@@ -111,7 +105,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	public handleSubmissionSuccess(unmappedAnswers: Answer[], router: Router) {
-		this.savingState = { label: 'SAVED', isComplete: true };
+		this.savingState.set({ label: 'SAVED', isComplete: true });
 		const answers = unmappedAnswers.map((answer: Answer) => ({
 			...answer,
 			title: this.getQuestionTitle(answer.id)
@@ -122,9 +116,7 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	public getQuestionTitle(questionId: number | string): string {
-		if (!this.currentSchema) return '';
-
-		for (const section of this.currentSchema.sections) {
+		for (const section of this.currentSchema().sections) {
 			const field = section.fields.find((field: Field) => field.id === questionId);
 			if (field) return field.label;
 		}
@@ -133,6 +125,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 
 	public handleSubmissionError(error: any) {
 		console.error(error);
-		this.savingState = { label: 'ERROR', isComplete: true }
+		this.savingState.set({ label: 'ERROR', isComplete: true });
 	}
 }

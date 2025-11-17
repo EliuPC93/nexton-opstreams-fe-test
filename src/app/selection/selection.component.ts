@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal, WritableSignal } from '@angular/core';
 import { NgClass } from '@angular/common';
 import { ProcurementService } from '../services';
 import { ProductRequest } from '../product-requests';
@@ -14,20 +14,20 @@ import { AtomsModule } from '../components/atoms/atoms.module';
 })
 
 export class SelectionComponent implements OnInit {
-	selected: string = '';
-	productSchemas: ProductRequest[] = [];
+	selected: WritableSignal<string> = signal('');
+	productSchemas: WritableSignal<ProductRequest[]> = signal([]);
 
 	constructor(private procurementService: ProcurementService, private router: Router) { }
 
 	ngOnInit() {
-		this.procurementService.getSchemas().subscribe((schemas: ProductRequest[]) => this.productSchemas = schemas);
+		this.procurementService.getSchemas().subscribe((schemas: ProductRequest[]) => this.productSchemas.set(schemas));
 	}
 
 	setSelection(selection: string) {
-		this.selected = selection;
+		this.selected.set(selection);
 	}
 
 	goToNext() {
-		this.router.navigate(['/questions'], {state: { schema: this.productSchemas.find((schema: ProductRequest) => schema.id === this.selected)}});
+		this.router.navigate(['/questions'], {state: { schema: this.productSchemas().find((schema: ProductRequest) => schema.id === this.selected())}});
 	}
 }

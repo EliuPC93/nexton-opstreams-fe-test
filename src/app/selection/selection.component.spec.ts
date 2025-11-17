@@ -55,22 +55,22 @@ describe('SelectionComponent', () => {
 	describe('ngOnInit', () => {
 		it('should call getSchemas on ProcurementService', () => {
 			expect(mockProcurementService.getSchemas).toHaveBeenCalled();
-			expect(component.productSchemas).toEqual(mockSchemas);
-			expect(component.selected).toBe('');
+			expect(component.productSchemas()).toEqual(mockSchemas);
+			expect(component.selected()).toBe('');
 		});
 	});
 
 	describe('setSelection method', () => {
 		it('should set the selected property to the provided value', () => {
 			component.setSelection('software-request');
-			expect(component.selected).toBe('software-request');
+			expect(component.selected()).toBe('software-request');
 		});
 	});
 
 	describe('goToNext method', () => {
 		it('should navigate to /questions route', () => {
-			component.productSchemas = mockSchemas;
-			component.selected = 'software-request';
+			component.productSchemas.set(mockSchemas);
+			component.selected.set('software-request');
 
 			component.goToNext();
 
@@ -87,8 +87,8 @@ describe('SelectionComponent', () => {
 		});
 
 		it('should pass undefined schema if selection does not match any schema', () => {
-			component.productSchemas = mockSchemas;
-			component.selected = 'non-existent';
+			component.productSchemas.set(mockSchemas);
+			component.selected.set('non-existent');
 
 			component.goToNext();
 
