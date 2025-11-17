@@ -127,7 +127,6 @@ describe('SectionComponent', () => {
 
   describe('getOrBuildSectionsFormGroup', () => {
     it('returns an object for sectionsFormGroup', () => {
-      // TODO: have better test
       const sections: Section[] = [
         { id: 'sec1', title: 'S1', fields: [] }
       ];
@@ -173,17 +172,6 @@ describe('SectionComponent', () => {
 
       expect(mockRouter.navigate).toHaveBeenCalledWith([3], jasmine.any(Object));
       expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema(), 2);
-    });
-
-    it('uses sectionIndex as default page when no argument provided', () => {
-      const schemaService = TestBed.inject(SchemaService);
-      spyOn(schemaService, 'setSchema');
-      component.sectionIndex.set(1);
-
-      component.goToPage();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith([2], jasmine.any(Object));
-      expect(schemaService.setSchema).toHaveBeenCalledWith(component.currentSchema(), 1);
     });
 
     it('navigates with correct relative path', () => {

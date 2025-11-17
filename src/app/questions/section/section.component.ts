@@ -40,12 +40,12 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	ngAfterViewChecked(): void {
-		if (!this.currentSchema().sections.length) return;
+		if (!this.currentSection().id || this.currentFormGroup) return;
 		this.currentFormGroup = this.sectionsFormGroup().get(this.currentSection().id) as FormGroup;
 		this.changeDetector.detectChanges();
 	}
 
-	goToPage(pageToGo = this.sectionIndex()) {
+	goToPage(pageToGo: number) {
 		this.router.navigate([pageToGo + 1], { relativeTo: this.router.routerState.root.firstChild });
 		this.sectionService.setSchema(this.currentSchema(), pageToGo);
 	}
@@ -89,8 +89,6 @@ export class SectionComponent implements OnInit, AfterViewChecked {
 	}
 
 	private buildSubmissionRequests() {
-		if (!this.sectionsFormGroup) return [];
-
 		const requests: Observable<Answer>[] = [];
 
 		for (const sectionId in this.sectionsFormGroup().value) {

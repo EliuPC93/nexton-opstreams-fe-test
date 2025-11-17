@@ -1,6 +1,6 @@
 <main >
     <aside>
-        @for (section of schema?.sections; track $index) {
+        @for (section of sections(); track $index) {
             <span [ngClass]="{'selected' : pageIndex() === $index}">{{section.title}}</span>
         }
     </aside>

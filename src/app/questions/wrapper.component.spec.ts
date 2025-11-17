@@ -43,9 +43,6 @@ describe('WrapperComponent', () => {
 	});
 
 	describe('Constructor', () => {
-		it('should extract schema from router navigation state', () => {
-			expect(component.schema).toEqual(mockSchema);
-		});
 
 		it('should initialize pageIndex to 0', () => {
 			expect(component.pageIndex()).toBe(0);
@@ -61,7 +58,7 @@ describe('WrapperComponent', () => {
 				.and.returnValue({ extras: { state: {} } } as any);
 			const newFixture = TestBed.createComponent(WrapperComponent);
 			const newComponent = newFixture.componentInstance;
-			expect(newComponent.schema).toBeUndefined();
+			expect(newComponent.sections()).toEqual([]);
 		});
 	});
 
